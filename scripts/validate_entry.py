@@ -16,7 +16,14 @@ from pathlib import Path
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 
-REQUIRED_FRONTMATTER = ["id", "title", "category", "tags", "version", "last_updated"]
+REQUIRED_FRONTMATTER = [
+    "id",
+    "title",
+    "category",
+    "tags",
+    "version",
+    "last_updated",
+]
 VALID_CATEGORIES = [
     "mission-vision",
     "roles-responsibilities",
@@ -44,20 +51,66 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 # ── Helpers ─────────────────────────────────────────────────────────────────────
 
 def _parse_frontmatter(raw: str) -> tuple[dict, str]:
-    match = re.match(r"^---\n(.*?)---\n", raw, re.DOTALL)
+    """Parse YAML frontmatter. Prefers PyYAML; robust fallback for multi-line lists."""
+    match = re.match(r"^---\n(.*?)\n---", raw, re.DOTALL)
     if not match:
         return {}, raw
+
     fm_text = match.group(1)
     body = raw[match.end():]
+
     fm: dict = {}
+
     try:
         import yaml
         fm = yaml.safe_load(fm_text) or {}
+        return fm, body  # PyYAML is authoritative when available
     except ImportError:
-        for line in fm_text.splitlines():
-            if ":" in line:
-                k, _, v = line.partition(":")
-                fm[k.strip()] = v.strip()
+        pass  # fall through to improved parser
+
+    # ── Robust fallback parser ─────────────────────────────────────────────
+    lines = fm_text.splitlines()
+    i = 0
+    current_key = None
+    while i < len(lines):
+        line = lines[i].rstrip()
+        stripped = line.strip()
+        if not stripped or stripped.startswith('#'):
+            i += 1
+            continue
+
+        # Key: value  or  Key:
+        if ":" in stripped and not stripped.startswith("-"):
+            key_part, _, value_part = stripped.partition(":")
+            key = key_part.strip()
+            value = value_part.strip()
+            current_key = key
+
+            if value.startswith("[") and value.endswith("]"):
+                # Inline list
+                items = value[1:-1].split(",")
+                fm[key] = [item.strip().strip('"').strip("'") for item in items if item.strip()]
+            elif value:
+                # Scalar value
+                fm[key] = value.strip('"').strip("'")
+            else:
+                # Start of multi-line list (e.g. "references:")
+                fm[key] = []
+            i += 1
+            continue
+
+        # List item: "  - item"
+        if stripped.startswith("- ") and current_key is not None:
+            item = stripped[2:].strip().strip('"').strip("'")
+            if current_key not in fm or not isinstance(fm[current_key], list):
+                fm[current_key] = []
+            fm[current_key].append(item)
+            i += 1
+            continue
+
+        # Unknown line — skip
+        i += 1
+
     return fm, body
 
 
@@ -88,7 +141,7 @@ def validate_file(path: Path) -> list[str]:
     # ── Frontmatter checks ──────────────────────────────────────────────────────
     if not fm:
         errors.append("MISSING frontmatter (expected --- ... --- block at top of file)")
-        return errors  # can't validate further without frontmatter
+        return errors
 
     for field in REQUIRED_FRONTMATTER:
         if field not in fm or not fm[field]:
@@ -112,6 +165,18 @@ def validate_file(path: Path) -> list[str]:
             f"INVALID last_updated '{fm['last_updated']}': must be YYYY-MM-DD"
         )
 
+    # List field validation (authors, references, tags, related)
+    list_fields = ["authors", "references", "tags", "related"]
+    for field in list_fields:
+        if field in fm:
+            val = fm[field]
+            if not isinstance(val, list):
+                errors.append(f"Field '{field}' must be a YAML list (e.g. ['Paul Seville'] or multi-line - items)")
+            elif field == "authors" and val and not all(isinstance(x, str) for x in val):
+                errors.append(f"Field 'authors' must contain only strings")
+            elif field == "references" and val and not all(isinstance(x, str) for x in val):
+                errors.append(f"Field 'references' must contain only strings")
+
     # ── Section checks ──────────────────────────────────────────────────────────
     sections = _parse_sections(body)
 
@@ -124,7 +189,6 @@ def validate_file(path: Path) -> list[str]:
     # Word count checks per section
     for section, (min_w, max_w) in WORD_LIMITS.items():
         if section in sections:
-            # For Prompt Snippet, only count content inside the code block
             text = sections[section]
             if section == "Prompt Snippet":
                 match = re.search(r"```[^\n]*\n(.*?)```", text, re.DOTALL)
@@ -149,12 +213,13 @@ def validate_file(path: Path) -> list[str]:
             "Consider splitting into two entries."
         )
 
-    # Prompt Snippet code block check
+    # Prompt Snippet checks
     if "Prompt Snippet" in sections:
-        if "```" not in sections["Prompt Snippet"]:
-            errors.append(
-                "Prompt Snippet must contain a fenced code block (``` ... ```)"
-            )
+        snippet = sections["Prompt Snippet"]
+        if "```" not in snippet:
+            errors.append("Prompt Snippet must contain a fenced code block (``` ... ```)")
+        elif not re.search(r"```[^\n]*\n.+?\n```", snippet, re.DOTALL):
+            errors.append("Prompt Snippet code block appears to be empty or malformed")
 
     return errors
 

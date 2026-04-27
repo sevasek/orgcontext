@@ -1,19 +1,29 @@
 # Contributing to OrgContext
 
-Thank you for helping build the standard organizational context library for LLM agents. This guide explains how to add entries, fix errors, and contribute industry forks.
+Thank you for helping build the standard organizational context library for LLM agents. This guide explains how to add entries, fix errors, and improve the project.
 
 ---
 
 ## Table of Contents
-
-1. [Before You Contribute](#before-you-contribute)
-2. [Types of Contributions](#types-of-contributions)
-3. [Adding a New Entry](#adding-a-new-entry)
-4. [Editing an Existing Entry](#editing-an-existing-entry)
-5. [Adding an Industry Fork](#adding-an-industry-fork)
+1. [Development Setup](#development-setup)
+2. [Before You Contribute](#before-you-contribute)
+3. [Types of Contributions](#types-of-contributions)
+4. [Adding a New Entry](#adding-a-new-entry)
+5. [Editing an Existing Entry](#editing-an-existing-entry)
 6. [Quality Bar](#quality-bar)
 7. [Review Process](#review-process)
 8. [Style Guide](#style-guide)
+9. [Code of Conduct](#code-of-conduct)
+
+---
+
+## Development Setup
+
+```bash
+git clone https://github.com/sevasek/orgcontext.git
+cd orgcontext
+pip install -e ".[dev]"
+```
 
 ---
 
@@ -21,7 +31,7 @@ Thank you for helping build the standard organizational context library for LLM 
 
 **Check what we're NOT:** OrgContext is strictly about *organizational and leadership concepts*. We reject entries that are:
 
-- General business jargon ("synergy, "bandwidth")
+- General business jargon ("synergy", "bandwidth")
 - Generic project management terms already covered by PMI/PMBOK docs
 - Industry-specific technical terms (code architecture, financial instruments, etc.) — these belong in industry forks
 - Academic or purely theoretical frameworks with no practitioner application
@@ -38,8 +48,7 @@ If in doubt, open an issue and ask before writing the entry.
 |------|--------------|-------|
 | New core entry | `entry/` | `new-entry` |
 | Edit / fix existing | `fix/` | `entry-fix` |
-| New industry fork entry | `industry/` | `industry-fork` |
-| Schema / tooling | `tooling/` | `tooling` |
+| Core tooling / Python package | `tooling/` | `tooling` |
 | Documentation | `docs/` | `docs` |
 
 ---
@@ -71,16 +80,7 @@ The **Prompt Snippet** section is the most important — it's what agents actual
 
 ### Step 4: Validate
 
-```bash
-pip install orgcontext[dev]
-python scripts/validate_entry.py core/<category>/<your-term>.md
-```
-
-The validator checks:
-- All required frontmatter fields are present
-- `related` entries exist in the corpus
-- `version` follows semver
-- Word count is within limits (definition: 50–300 words; prompt snippet: 30–150 words)
+Carefully review your entry against the [entry template](./docs/entry-template.md) and the [Quality Bar](#quality-bar) below.
 
 ### Step 5: Open a PR
 
@@ -98,19 +98,6 @@ The validator checks:
 
 ---
 
-## Adding an Industry Fork
-
-Industry forks extend core entries with domain-specific context. They live in `industry/<sector>/`.
-
-Fork entries must:
-1. Reference a parent core entry in frontmatter: `parent: servant-leadership`
-2. Only *extend* (not contradict) the parent definition
-3. Be maintained by at least one domain expert (list yourself in `CODEOWNERS`)
-
-Example sectors: `tech-startup`, `enterprise`, `healthcare`, `nonprofit`, `financial-services`, `government`.
-
----
-
 ## Quality Bar
 
 Before a PR is merged, maintainers check:
@@ -118,9 +105,7 @@ Before a PR is merged, maintainers check:
 - [ ] **Accurate** — Definition matches mainstream practitioner usage, not just one school of thought
 - [ ] **Balanced** — Counter-examples and anti-patterns are included
 - [ ] **Agent-ready** — Prompt snippet is written for an LLM, not a human reader
-- [ ] **Cited** — At least one real-world source or canonical framework cited in `## See Also`
 - [ ] **Narrow scope** — Not trying to cover more than one concept
-- [ ] **No jargon in definitions** — Define every technical term used in the entry
 
 ---
 
@@ -128,10 +113,9 @@ Before a PR is merged, maintainers check:
 
 1. Automated validation runs on PR open
 2. One maintainer reviews within 7 days
-3. One community review (any contributor with ≥2 merged entries)
-4. Merged on approval; version bump in next release
+3. Merged on approval
 
-If a PR gets no review in 7 days, tag `@orgcontext/maintainers` in a comment.
+If a PR gets no review in 7 days, ping the repository owner in a comment.
 
 ---
 

@@ -1,3 +1,5 @@
+Last updated: 2026-04-27
+
 # Entry Format Specification
 
 This document defines the complete schema for OrgContext entries. All entries must conform to this spec to pass automated validation.
@@ -16,19 +18,22 @@ This document defines the complete schema for OrgContext entries. All entries mu
 
 ```yaml
 ---
-id: string                  # REQUIRED. Matches filename without extension.
+id: string                  # REQUIRED. Must match filename (no .md)
 title: string               # REQUIRED. Human-readable title, title case.
 category: enum              # REQUIRED. See categories below.
-tags: string[]              # REQUIRED. 3–6 lowercase tags.
-related: string[]           # OPTIONAL. IDs of related core entries.
-version: semver             # REQUIRED. Starts at 1.0.0.
-last_updated: YYYY-MM-DD   # REQUIRED. Date of last substantive edit.
-authors: string[]           # OPTIONAL. GitHub usernames of contributors.
-sources: string[]           # OPTIONAL. Canonical references.
-deprecated: boolean         # OPTIONAL. Default false.
-parent: string              # OPTIONAL. Industry fork only. ID of parent core entry.
+tags: string[]              # REQUIRED. 3–6 relevant lowercase tags.
+related: string[]           # OPTIONAL. IDs of related entries.
+version: semver             # REQUIRED. Start at 1.0.0
+last_updated: YYYY-MM-DD    # REQUIRED.
+authors: string[]           # OPTIONAL but strongly encouraged. 
+references: string[]        # OPTIONAL. Key books, papers, or sources.
+deprecated: boolean         # OPTIONAL. Default: false.
+parent: string              # OPTIONAL. Only for industry forks.
 ---
 ```
+
+**Note on `authors`:**  
+We strongly encourage adding your name (or GitHub handle) when you create a new entry or make substantial changes. This helps recognize contributions and builds a sense of ownership in the corpus.
 
 ### Valid Categories
 

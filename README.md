@@ -1,85 +1,67 @@
 # OrgContext
 
-> **The LLM-native dictionary of mission, vision, roles, leadership frameworks, and organizational concepts.**
+> **A growing, LLM-native dictionary of mission, vision, roles, leadership frameworks, and organizational concepts.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Entries](https://img.shields.io/badge/entries-60%2B-blue)](./core/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 ---
 
 ## Why OrgContext?
 
-Agent failures are rarely about raw intelligence — they're about missing **organizational grounding**.
+LLM agents often fail not because they lack intelligence, but because they lack **shared organizational grounding**. Terms like "strategic alignment," "Product Owner," or "servant leadership" get interpreted differently across prompts, agents, or sessions.
+
+OrgContext aims to provide a reusable, community-curated corpus of clear definitions, decision heuristics, anti-patterns, and ready-to-inject prompt snippets for these concepts.
+
+Think of it as a living reference library that you can load into your agents, RAG pipelines, or system prompts — the same way you import code libraries.
 
 | Without OrgContext | With OrgContext |
 |--------------------|-----------------|
 | "Strategic alignment" means whatever the model guesses | Precise definition + decision heuristics + anti-patterns |
 | Role ambiguity: "What does a Product Owner *actually* decide?" | Canonical scope, escalation rules, RACI mapping |
 | Leadership model mismatch across agents | Shared, versioned, injectable leadership vocabulary |
-| Custom `company-context.md` reinvented per project | One community-maintained corpus, pinnable by version |
+| Custom `company-context.md` reinvented per project | One community-maintained corpus |
 | Multi-agent systems with conflicting interpretations | Single shared lexicon loaded the same way everywhere |
 
-**OrgContext makes organizational context as reusable and reliable as code libraries.**
+---
+
+## Current Status
+- Core ideas and entry format are defined.
+- A few starter Markdown entries in `core/`.
+- Early Python utilities for loading and injecting context.
+- Open to contributions for new entries and integrations.
+This is an early-stage / MVP project. The vision is big, but we're starting small and iterating in public.
 
 ---
 
 ## Quick Start
 
-### Python
+### Install
 
 ```bash
-pip install orgcontext
+git clone https://github.com/sevasek/orgcontext.git
+cd orgcontext
 ```
+Each entry is a self-contained Markdown file with a Prompt Snippet section ready for direct use.
 
-```python
-from orgcontext import load, inject
+#### Copy-paste
+Prototype the integration of OrgContext by copy-pasting the Prompt Snippet section into your agent prompts.
 
-# Load a single entry
-entry = load("servant-leadership")
-print(entry.definition)
-print(entry.prompt_snippet)
+#### Point
+You can also point any RAG/vector store directly at the `core/` directory.
 
-# Inject multiple entries into a prompt
-context = inject(["mission-alignment", "okrs", "raci"])
-# → Ready-to-paste prompt block with definitions + heuristics
-```
-
-### Direct Markdown / RAG
-
-Every entry is a self-contained Markdown file. Point your RAG pipeline at `./core/` or load files directly:
-
+#### Load
+Simple loader example:
 ```python
 import pathlib
-entry = pathlib.Path("core/leadership-frameworks/servant-leadership.md").read_text()
+
+def load_entry(relative_path: str) -> str:
+    path = pathlib.Path(f"core/{relative_path}.md")
+    return path.read_text(encoding="utf-8")
+
+context = load_entry("leadership-frameworks/servant-leadership")
+print(context)
 ```
-
-### LangGraph State Injection
-
-```python
-from orgcontext.integrations.langgraph import OrgContextNode
-
-graph.add_node("context", OrgContextNode(entries=["product-owner", "okrs"]))
-```
-
-### CrewAI Skill Loader
-
-```python
-from orgcontext.integrations.crewai import org_context_tool
-
-researcher = Agent(
-    role="Strategy Analyst",
-    tools=[org_context_tool(entries=["mission-alignment", "cynefin"])]
-)
-```
-
-### MCP Server
-
-```bash
-npx orgcontext-mcp --entries core/
-# Exposes: orgcontext://lookup/{term}
-```
-
 ---
 
 ## Corpus Structure
@@ -98,72 +80,8 @@ industry/
 ├── enterprise/              # Steering committees, change management
 └── nonprofit/               # Theory of change, impact measurement
 
-integrations/
-├── crewai/
-├── langgraph/
-├── autogen/
-└── mcp/
 ```
-
----
-
-## Entry Format
-
-Every entry follows the same schema — designed to be pasted directly into prompts:
-
-```markdown
----
-id: servant-leadership
-title: Servant Leadership
-category: leadership-frameworks
-tags: [leadership, management, culture]
-related: [transformational-leadership, psychological-safety, trust]
-version: 1.0.0
-last_updated: 2025-01-01
----
-
-## Definition
-...
-
-## When to Apply
-...
-
-## Decision Heuristics
-...
-
-## Counter-Examples / Anti-Patterns
-...
-
-## Prompt Snippet
-> [Paste this block directly into an agent system prompt]
-...
-
-## See Also
-...
-```
-
-[→ Full entry spec](./docs/entry-format.md)
-
----
-
-## Versioning
-
-OrgContext uses [Semantic Versioning](https://semver.org/):
-
-- **PATCH** (1.0.x): Typo fixes, clarifications that don't change meaning
-- **MINOR** (1.x.0): New entries, backward-compatible additions
-- **MAJOR** (x.0.0): Breaking changes to entry schema or significant re-definitions
-
-Pin to a version in your agent config:
-
-```yaml
-# agent.yaml
-orgcontext_version: "1.2.3"
-entries:
-  - mission-alignment
-  - servant-leadership
-  - okrs
-```
+See [Index](/docs/index.md) for current entries.
 
 ---
 
@@ -172,7 +90,8 @@ entries:
 We welcome contributions from leadership coaches, PMs, engineers, and agent builders.
 
 [→ Read the Contribution Guide](./CONTRIBUTING.md)  
-[→ Browse open issues](https://github.com/your-org/orgcontext/issues)  
+[→ Browse open issues](https://github.com/sevasek/orgcontext/issues)  
+[→ Entry Format Specification](./docs/entry-format.md)
 [→ Entry template](./docs/entry-template.md)
 
 **Quick contribution path:**
@@ -185,13 +104,12 @@ We welcome contributions from leadership coaches, PMs, engineers, and agent buil
 
 ## Roadmap
 
-| Milestone | Target |
-|-----------|--------|
-| MVP: 60+ core entries + Python loader | Q1 2025 |
-| v1.0: Semantic versioning + MCP server | Q2 2025 |
-| 200+ entries + industry forks | Q3 2025 |
-| RAG embeddings + fine-tuning dataset | Q4 2025 |
-| Enterprise sync (Notion, Confluence) | 2026 |
+| Target | Milestone |
+|--------|-----------|
+| Now | Solid entry format + 10–20 high-quality starter entries + basic loaders. |
+| Short-term | Python package on PyPI, more entries, initial integrations (LangGraph, CrewAI, etc.). |
+| Medium-term | Versioning, RAG-friendly embeddings, MCP/server support. |
+| Longer-term | Industry-specific packs, enterprise sync tools. |
 
 ---
 
@@ -205,9 +123,9 @@ MIT — free for personal, commercial, and agent use.
 ## Citation
 
 ```bibtex
-@misc{orgcontext2025,
+@misc{orgcontext2026,
   title        = {OrgContext: The LLM-native organizational context dictionary},
-  year         = {2025},
-  url          = {https://github.com/your-org/orgcontext}
+  year         = {2026},
+  url          = {https://github.com/sevasek/orgcontext}
 }
 ```

@@ -3,11 +3,11 @@ id: servant-leadership
 title: Servant Leadership
 category: leadership-frameworks
 tags: [leadership, management, culture, empowerment, teams]
-related: [transformational-leadership, psychological-safety, trust, situational-leadership]
+related: [transformational-leadership, psychological-safety, trust]
 version: 1.0.0
-last_updated: 2025-01-01
-authors: []
-sources:
+last_updated: 2026-04-27
+authors: ["Paul Seville"]
+references:
   - "Robert K. Greenleaf, *The Servant as Leader*, 1970"
   - "Ken Blanchard & Phil Hodges, *The Servant Leader*, 2003"
 ---
@@ -43,7 +43,7 @@ This does not mean the leader lacks authority or avoids hard decisions. It means
 
 ## Counter-Examples / Anti-Patterns
 
-- **Anti-pattern: Servile leadership.** Servant leadership is not conflict avoidance or unconditional agreement. Leaders who never challenge, never hold accountable, or who prioritize being liked are *servile*, not servants. Real servant leaders deliver hard feedback precisely because they care about growth.
+- **Anti-pattern: Servile leadership.** Servant leadership is not conflict avoidance or unconditional agreement. Leaders who never challenge, never hold accountable, or who prioritize being liked are *servile*, not servants. Real servant leaders deliver hard feedback precisely because they care about long-term growth.
 - **Misapplication: Bottomless consensus.** Servant leaders still make calls. When a decision is time-sensitive or the team is deadlocked, a servant leader decides and explains — they don't abdicate.
 - **Confusion with laissez-faire leadership.** Laissez-faire is absence of leadership. Servant leadership is active, attentive, and engaged — just differently oriented.
 - **Context mismatch:** In genuine crises (system outage, safety incident), servant leadership may need to yield to more directive styles temporarily. Servant leadership is a default, not an absolute.
@@ -54,19 +54,13 @@ This does not mean the leader lacks authority or avoids hard decisions. It means
 
 ```
 [ORGANIZATIONAL CONTEXT: Servant Leadership]
-
-Definition: A leadership model where the leader's primary job is to serve, enable, and remove obstacles for their team — not to direct and control. Authority exists to benefit the team and mission, not the leader.
-
-When this is relevant:
-- Assessing whether a leader is being effective or is the bottleneck
-- Evaluating decisions that affect team autonomy and ownership
-- Advising on how to handle a team request or conflict
-
+Definition: A leadership philosophy where the leader’s primary role is to serve the team — removing obstacles, enabling growth, and creating conditions for people to do their best work. Authority is exercised for the team and mission, not for personal power or status.
 Key distinctions:
-- Servant ≠ servile. Servant leaders still hold people accountable and make hard calls.
-- Servant ≠ consensus-only. Decisions still get made, with explanation.
-
-Apply this by: Evaluate leader actions by asking "does this serve the team's ability to do great work?" If a proposed action increases dependency on the leader or reduces team ownership, flag it as misaligned with servant leadership.
+• Servant ≠ servile: Servant leaders still hold people accountable and make hard calls when needed
+• Servant ≠ abdication: They actively lead, listen, and support rather than disappear
+• Focus is on long-term growth and autonomy of team members
+When relevant: Evaluating leadership effectiveness, team performance issues, building psychological safety, or deciding how to handle team requests and conflicts.
+Action guidance: When assessing a leader’s action, ask: “Does this remove obstacles and increase team ownership, or does it create dependency on the leader?” Prioritize listening, empathy, and development. Use authority to serve the team, not to control it.
 ```
 
 ---

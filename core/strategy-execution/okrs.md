@@ -5,9 +5,9 @@ category: strategy-execution
 tags: [goals, strategy, measurement, alignment, performance]
 related: [mission-alignment, raci, north-star-metric, strategy-map]
 version: 1.0.0
-last_updated: 2025-01-01
-authors: []
-sources:
+last_updated: 2026-04-27
+authors: ["Paul Seville"]
+references:
   - "John Doerr, *Measure What Matters*, 2018"
   - "Andy Grove, *High Output Management*, 1983"
 ---
@@ -18,7 +18,7 @@ OKRs (Objectives and Key Results) are a goal-setting framework that pairs an amb
 
 OKRs operate at multiple levels: company, team, and individual. Upper-level OKRs inform lower-level ones, creating vertical alignment. Shared Key Results across teams create horizontal alignment. OKRs are typically set quarterly at the team level and annually at the company level.
 
-A critical feature of healthy OKR culture: Key Results should be ambitious enough that achieving 70%–80% is considered strong performance (the "stretch goal" principle). Consistently hitting 100% signals the targets were too conservative.
+A critical feature of healthy OKR culture: Key Results should be ambitious enough that achieving 70%–80% is considered strong performance (the "stretch goal" principle). Consistently hitting 100% signals the targets were set too conservatively.
 
 ---
 
@@ -43,7 +43,7 @@ A critical feature of healthy OKR culture: Key Results should be ambitious enoug
 
 ## Counter-Examples / Anti-Patterns
 
-- **Activity OKRs:** "Complete the market research report" is an activity, not a Key Result. Add the *impact* of that report: "Identify 3 market segments with >$50M TAM."
+- **Activity OKRs:** "Run the market research" is an activity, not a Key Result. Add the **impact** of that report: "Identify 3 market segments with >$50M TAM."
 - **Vanity metrics:** Key Results like "increase social followers by 10%" may not predict real business outcomes. Ask: "If we hit this, does it confirm the Objective was achieved?"
 - **OKR theater:** Organizations that write OKRs but never review them mid-cycle or adjust when reality shifts. OKRs should be living, reviewed artifacts — not annual documents filed away.
 - **Too many OKRs:** More than 3–5 Objectives per team or 3–5 Key Results per Objective creates diffusion, not focus. If everything is a priority, nothing is.
@@ -54,20 +54,14 @@ A critical feature of healthy OKR culture: Key Results should be ambitious enoug
 
 ```
 [ORGANIZATIONAL CONTEXT: OKRs]
-
-Definition: A goal framework pairing an Objective (qualitative direction) with 2–5 Key Results (measurable indicators). Achieving all Key Results should confirm the Objective was met. Healthy targets are ambitious: 70–80% attainment is strong.
-
-When this is relevant:
-- Evaluating whether work is strategically aligned
-- Assessing whether a goal or metric is well-formed
-- Planning prioritization across competing initiatives
-
-Key distinctions:
-- Key Results measure outcomes, not activities or outputs
-- OKRs are NOT performance scorecards — decouple from comp/review
-- Hitting 100% consistently = targets are too conservative
-
-Apply this by: When given a task, goal, or initiative, check whether it maps to a Key Result. If it doesn't, surface that gap. If asked to evaluate a proposed Key Result, check: Is it measurable? Is it an outcome (not activity)? Is it ambitious enough to require effort?
+Definition: A goal-setting framework that pairs an ambitious, qualitative Objective with 2–5 measurable Key Results. Achieving most Key Results (70–80%) should mean the Objective was met. OKRs create alignment between strategy and execution.
+Key principles:
+• Objectives are inspirational outcomes ("where we want to go")
+• Key Results are measurable indicators of progress (not activities or outputs)
+• Targets should be stretch goals — consistently hitting 100% means they were too easy
+• OKRs are NOT performance scorecards — decouple from compensation/reviews
+When relevant: Strategic planning, prioritization, evaluating initiatives, or diagnosing lack of focus/alignment.
+Action guidance: When reviewing any proposed goal, project, or task, ask: "Which Key Result does this support?" If none, surface the misalignment. Ensure Key Results are measurable outcomes, not tasks. Use OKRs as a living tool for quarterly focus and learning, not as static documents.
 ```
 
 ---

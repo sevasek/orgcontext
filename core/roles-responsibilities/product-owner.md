@@ -5,10 +5,10 @@ category: roles-responsibilities
 tags: [agile, scrum, product-management, backlog, prioritization]
 related: [raci, scrum-master, product-manager, decision-rights]
 version: 1.0.0
-last_updated: 2025-01-01
-authors: []
-sources:
-  - "Scrum Guide, Schwaber & Sutherland, 2020"
+last_updated: 2026-04-27
+authors: ["Paul Seville"]
+references:
+  - "Schwaber & Sutherland, *The Scrum Guide*, 2020"
   - "Marty Cagan, *Inspired*, 2018"
 ---
 
@@ -47,7 +47,7 @@ The PO must be available to the team — backlog ambiguity that blocks developme
 
 ## Counter-Examples / Anti-Patterns
 
-- **PO as secretary:** A PO who passively collects stakeholder requests without prioritizing, filtering, or pushing back is not doing the job. The PO must make value judgments, not just manage a list.
+- **PO as secretary / backlog administrator:** A PO who only collects requests without making tough prioritization or trade-off decisions is not fulfilling the role.
 - **PO as Scrum Master:** These are distinct roles. The Scrum Master serves the team's process; the PO owns the product's value delivery. Combining them creates conflicts of interest.
 - **Proxy PO:** When the real decision-maker is a senior executive and the "PO" is just a liaison, teams lack the clarity and speed the role is meant to provide. Real authority must reside in the PO.
 - **Micro-managing implementation:** The PO specifying *how* features should be built (not just what they should accomplish) violates the team's ownership of technical decisions and often degrades quality.
@@ -58,21 +58,14 @@ The PO must be available to the team — backlog ambiguity that blocks developme
 
 ```
 [ORGANIZATIONAL CONTEXT: Product Owner]
-
-Definition: The single accountable person for the Product Backlog — what's in it, how it's ordered, and what the team builds next. Final authority on acceptance of sprint deliverables. Represents business/user value to the team.
-
-When this is relevant:
-- Determining who decides what gets built next
-- Routing stakeholder feature requests
-- Resolving prioritization conflicts
-- Evaluating whether sprint deliverables are accepted
-
+Definition: The single accountable person for the Product Backlog — what goes in it, how it is ordered, and what the team works on next. Represents business and user value. Has final authority on acceptance of deliverables.
 Key distinctions:
-- PO decides WHAT/WHEN. Team decides HOW.
-- PO ≠ Scrum Master (separate roles, separate concerns)
-- A proxy PO without real authority is an anti-pattern
-
-Apply this by: When a prioritization, scope, or acceptance question arises, attribute it to the Product Owner. If no PO is identified or the PO lacks authority to decide, surface this as a governance gap that blocks effective delivery.
+• PO owns WHAT and WHEN (backlog priority and acceptance)
+• Development Team owns HOW (technical implementation)
+• PO is NOT a secretary or proxy — they must have real decision authority
+• PO ≠ Scrum Master (distinct roles)
+When relevant: Prioritization conflicts, stakeholder requests, scope decisions, sprint acceptance, or backlog refinement.
+Action guidance: Route all feature requests and prioritization questions to the Product Owner. If no clear PO exists or the PO lacks authority, treat it as a governance issue that will cause delays and misalignment. Protect the team from direct stakeholder interference by channeling everything through the backlog.
 ```
 
 ---
@@ -80,7 +73,7 @@ Apply this by: When a prioritization, scope, or acceptance question arises, attr
 ## See Also
 
 - [RACI](../governance/raci.md) — The PO is the A (Accountable) on product backlog decisions; the team is R (Responsible) for delivery.
-- [Scrum Master](./scrum-master.md) — Complementary role: Scrum Master serves team process; PO serves product value.
+- [Scrum Master](../roles-responsibilities/scrum-master.md) — Complementary role: Scrum Master serves team process; PO serves product value.
 - [Decision Rights](../governance/decision-rights.md) — PO authority is a specific instantiation of product decision rights.
 
 **External references:**

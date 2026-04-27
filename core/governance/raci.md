@@ -5,9 +5,9 @@ category: governance
 tags: [governance, decision-rights, roles, accountability, coordination]
 related: [decision-rights, product-owner, okrs, escalation-path]
 version: 1.0.0
-last_updated: 2025-01-01
-authors: []
-sources:
+last_updated: 2026-04-27
+authors: ["Paul Seville"]
+references:
   - "Project Management Institute, *PMBOK Guide*"
   - "Smith & Erwin, *Role & Responsibility Charting (RACI)*, 2005"
 ---
@@ -21,7 +21,7 @@ RACI is a responsibility assignment matrix that clarifies who does what on any g
 - **C – Consulted:** People whose input is sought before a decision or deliverable is finalized. Two-way communication. Their feedback should influence the outcome.
 - **I – Informed:** People who are notified of decisions or outcomes after the fact. One-way communication. They don't influence the work but need visibility.
 
-RACI removes ambiguity at handoff points, prevents both duplication of effort and gaps in ownership, and makes escalation paths clear.
+RACI removes ambiguity at handoff points, prevents duplication of effort and gaps in ownership, and clarifies escalation paths.
 
 ---
 
@@ -46,7 +46,7 @@ RACI removes ambiguity at handoff points, prevents both duplication of effort an
 
 ## Counter-Examples / Anti-Patterns
 
-- **Diffuse accountability:** "We're all accountable" is not RACI-compliant. Collective accountability means no one is accountable. Designate one person.
+- **Diffuse accountability:** Phrases like "We're all accountable" violate RACI. True collective accountability usually means no one is accountable.
 - **The A who delegates accountability:** The A can delegate work (to R's) but not accountability. If things go wrong, the A answers for it, even if someone else did the work.
 - **Consulting everyone to avoid conflict:** When everyone is C, the consulted list loses meaning. Stakeholders who are always consulted but never change the outcome should be moved to I.
 - **RACI as bureaucracy:** RACI on tiny tasks creates overhead without value. Apply it to decisions and deliverables with real ambiguity or cross-functional impact, not to every to-do.
@@ -57,20 +57,17 @@ RACI removes ambiguity at handoff points, prevents both duplication of effort an
 
 ```
 [ORGANIZATIONAL CONTEXT: RACI]
-
-Definition: A responsibility matrix. R = does the work (can be multiple). A = owns the outcome (exactly one per item). C = consulted before decisions (two-way). I = informed after decisions (one-way).
-
-When this is relevant:
-- Determining who should make or approve a decision
-- Investigating why a task stalled or has conflicting owners
-- Designing coordination for cross-team work
-
-Key distinctions:
-- There must be exactly ONE Accountable per item — never multiple, never zero
-- Consulted ≠ Informed: C's can influence the outcome, I's cannot
-- Accountability cannot be delegated, only work can
-
-Apply this by: When a task, decision, or deliverable is ambiguous about ownership, ask "Who is the A?" If there is no A or there are multiple A's, surface this as a governance gap that must be resolved before work can proceed.
+Definition: A responsibility assignment matrix that clarifies ownership.
+• R = Responsible (does the work, multiple allowed)
+• A = Accountable (owns the outcome, exactly ONE per item)
+• C = Consulted (two-way input, can influence the result)
+• I = Informed (one-way notification, no influence)
+Key rules:
+• Exactly one A per task/decision — never zero, never multiple
+• Accountability cannot be delegated (only the work can)
+• C’s input matters; I’s does not
+When relevant: Project kickoffs, cross-functional work, stalled tasks, role confusion, or governance audits.
+Action guidance: When ownership is unclear, build or reference a RACI. Always ask “Who is the A?” If there is no clear single A or multiple A's exist, resolve it immediately. This prevents duplication, gaps, and finger-pointing.
 ```
 
 ---

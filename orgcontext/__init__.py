@@ -24,12 +24,28 @@ try:
 except ImportError:
     HAS_YAML = False
 
+__version__ = "0.1.0"
+__all__ = ["load", "inject", "list_entries", "OrgContextEntry"]
 
 # ── Path resolution ────────────────────────────────────────────────────────────
 
 def _corpus_root() -> Path:
-    """Return the path to the corpus root (the repo root)."""
-    return Path(__file__).parent.parent
+    """Return the path to the corpus root."""
+    # For editable installs and source
+    root = Path(__file__).parent.parent
+    if (root / "core").exists():
+        return root
+    
+    # Fallback: try to find it relative to installed package
+    try:
+        import orgcontext
+        pkg_root = Path(orgcontext.__file__).parent.parent
+        if (pkg_root / "core").exists():
+            return pkg_root
+    except Exception:
+        pass
+    
+    raise RuntimeError("Could not locate OrgContext corpus root. Is 'core/' folder present?")
 
 
 # ── Data model ─────────────────────────────────────────────────────────────────
@@ -117,6 +133,7 @@ def _parse_frontmatter(raw: str) -> dict:
     fm_text = match.group(1)
     if HAS_YAML:
         return yaml.safe_load(fm_text) or {}
+    
     # Minimal fallback parser for key: value lines
     result = {}
     for line in fm_text.splitlines():
@@ -140,6 +157,9 @@ def load(entry_id: str, corpus_root: Optional[Path] = None) -> OrgContextEntry:
     Raises:
         FileNotFoundError: If no entry with the given ID exists.
     """
+    if not entry_id or not isinstance(entry_id, str):
+        raise ValueError("entry_id must be a non-empty string")
+
     root = corpus_root or _corpus_root()
     path = _find_entry_path(entry_id, root)
     if path is None:
@@ -213,7 +233,7 @@ def list_entries(
             continue
         results.append(
             {
-                "id": fm["id"],
+                "id": fm.get("id", md_file.stem),
                 "title": fm.get("title", fm["id"]),
                 "category": fm.get("category", ""),
                 "tags": fm.get("tags", []) or [],

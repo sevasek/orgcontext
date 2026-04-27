@@ -5,9 +5,9 @@ category: strategy-execution
 tags: [decision-making, complexity, sensemaking, leadership, problem-solving]
 related: [servant-leadership, situational-leadership, okrs, mission-alignment]
 version: 1.0.0
-last_updated: 2025-01-01
-authors: []
-sources:
+last_updated: 2026-04-27
+authors: ["Paul Seville"]
+references:
   - "Dave Snowden & Mary Boone, 'A Leader's Framework for Decision Making', HBR 2007"
   - "Dave Snowden, *Cynefin: Weaving Sense-Making into the Fabric of Our World*, 2020"
 ---
@@ -58,19 +58,17 @@ Misdiagnosing the domain — applying best practices to a complex problem, or tr
 
 ```
 [ORGANIZATIONAL CONTEXT: Cynefin Framework]
-
-Definition: A sensemaking framework with five domains. Clear: best practices apply (sense → categorize → respond). Complicated: expert analysis needed (sense → analyze → respond). Complex: cause-effect only visible in retrospect, use safe-to-fail experiments (probe → sense → respond). Chaotic: act first to stabilize (act → sense → respond). Confused: don't know which domain yet.
-
-When this is relevant:
-- Deciding how to approach an unfamiliar problem
-- Evaluating why a plan keeps failing despite good execution
-- Choosing between expert-led vs. experiment-led approaches
-
+Definition: A sensemaking framework that classifies problems into five domains to select the right approach:
+• Clear: Cause-effect is obvious → Sense → Categorize → Respond (best practices)
+• Complicated: Cause-effect exists but needs analysis → Sense → Analyze → Respond (expertise)
+• Complex: Cause-effect only visible in retrospect → Probe → Sense → Respond (safe-to-fail experiments)
+• Chaotic: No clear cause-effect → Act → Sense → Respond (stabilize first)
+• Confused: Don't know which domain you're in
 Key distinctions:
-- Complicated ≠ Complex: Complicated has a knowable answer; Complex does not yet.
-- Best practices harm Complex problems — they suppress the variation needed for learning.
-
-Apply this by: Classify the problem domain before recommending an approach. Complex → small safe-to-fail experiments. Chaotic → immediate stabilizing action. Complicated → bring in relevant expertise.
+• Complicated ≠ Complex — Complicated has knowable answers; Complex requires experimentation
+• Best practices work in Clear/Complicated but can harm Complex problems
+When relevant: Choosing how to approach problems, diagnosing why plans keep failing, or deciding between expert analysis vs. experimentation.
+Action guidance: Always classify the domain first. Use best practices in Clear, experts in Complicated, safe-to-fail probes in Complex, and immediate stabilizing action in Chaotic. Misclassifying the domain (especially treating Complex as Complicated) is a common leadership failure.
 ```
 
 ---
