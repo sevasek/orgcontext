@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "orgcontext"
+version = "0.1.0"
+description = "The LLM-native dictionary of mission, vision, roles, leadership frameworks, and organizational concepts."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+keywords = ["llm", "agents", "organizational-context", "leadership", "prompt-engineering"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.optional-dependencies]
+yaml = ["PyYAML>=6.0"]
+dev = [
+    "PyYAML>=6.0",
+    "pytest>=8.0",
+    "ruff>=0.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/orgcontext"
+Documentation = "https://github.com/your-org/orgcontext/blob/main/docs/"
+Repository = "https://github.com/your-org/orgcontext"
+Issues = "https://github.com/your-org/orgcontext/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["orgcontext*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
