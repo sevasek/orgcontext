@@ -18,7 +18,7 @@ REPO_ROOT = Path(__file__).parent.parent
 CORE_DIR = REPO_ROOT / "core"
 INDUSTRY_DIR = REPO_ROOT / "industry"
 DOCS_DIR = REPO_ROOT / "docs"
-OUTPUT_FILE = DOCS_DIR / "INDEX.md"   # ← Changed to docs/INDEX.md
+OUTPUT_FILE = DOCS_DIR / "index.md"
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def parse_frontmatter(content: str) -> dict:
@@ -123,12 +123,12 @@ def build_index():
     lines.append("See [open issues labeled `new-entry`](https://github.com/sevasek/orgcontext/issues?q=label%3Anew-entry) for entries the community has proposed.")
     lines.append("")
     lines.append("High-priority gaps:")
-    lines.append("**mission-vision:** `vision`, `north-star-metric`, `bhag`, `organizational-purpose`")
-    lines.append("**leadership-frameworks:** `transformational-leadership`, `situational-leadership`, `adaptive-leadership`, `distributed-leadership`")
-    lines.append("**roles-responsibilities:** `scrum-master`, `product-manager`, `cto`, `chief-of-staff`, `engineering-manager`")
-    lines.append("**governance:** `decision-rights`, `escalation-path`, `steering-committee`, `working-group`")
-    lines.append("**culture-values:** `trust`, `feedback-culture`, `belonging`, `team-norms`")
-    lines.append("**strategy-execution:** `strategy-map`, `north-star-metric`, `portfolio-management`, `change-management`")
+    lines.append("**mission-vision:** `bhag`, `organizational-purpose`")
+    lines.append("**leadership-frameworks:** `adaptive-leadership`, `distributed-leadership`")
+    lines.append("**roles-responsibilities:** `product-manager`, `cto`, `chief-of-staff`, `engineering-manager`")
+    lines.append("**governance:** `steering-committee`, `working-group`")
+    lines.append("**culture-values:** `belonging`, `team-norms`")
+    lines.append("**strategy-execution:** `portfolio-management`, `change-management`")
 
     OUTPUT_FILE.write_text("\n".join(lines), encoding="utf-8")
     print(f"✅ Index generated successfully: {OUTPUT_FILE}")

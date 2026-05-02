@@ -173,9 +173,9 @@ def validate_file(path: Path) -> list[str]:
             if not isinstance(val, list):
                 errors.append(f"Field '{field}' must be a YAML list (e.g. ['Paul Seville'] or multi-line - items)")
             elif field == "authors" and val and not all(isinstance(x, str) for x in val):
-                errors.append(f"Field 'authors' must contain only strings")
+                errors.append("Field 'authors' must contain only strings")
             elif field == "references" and val and not all(isinstance(x, str) for x in val):
-                errors.append(f"Field 'references' must contain only strings")
+                errors.append("Field 'references' must contain only strings")
 
     # ── Section checks ──────────────────────────────────────────────────────────
     sections = _parse_sections(body)
