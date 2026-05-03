@@ -26,4 +26,4 @@ labels: ["entry:new", "status:ready"]
 - [ ] All 6 required sections present (Definition, When to Apply, Decision Heuristics, Counter-Examples / Anti-Patterns, Prompt Snippet, See Also)
 - [ ] `python scripts/validate_entry.py --all` passes with no errors
 - [ ] Prompt snippet is agent-ready (self-contained, 30-150 words)
-- [ ] Entry added to project board with priority label
+- [ ] Priority label applied (`priority:0`–`priority:3`)

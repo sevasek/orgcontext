@@ -104,7 +104,7 @@ We welcome contributions from leadership coaches, PMs, engineers, and agent buil
 
 ## Roadmap
 
-> The **[OrgContext Roadmap](https://github.com/sevasek/orgcontext/projects/1)** project board is the source of truth for all planned work.
+> [Open issues](https://github.com/sevasek/orgcontext/issues) are the source of truth for all planned work. The table below is a high-level summary.
 
 | Phase | Focus | Status |
 |-------|-------|--------|
@@ -113,7 +113,7 @@ We welcome contributions from leadership coaches, PMs, engineers, and agent buil
 | **Medium-term** | Versioning, RAG-friendly embeddings, MCP/server support | Planned |
 | **Longer-term** | Industry-specific packs, enterprise sync tools | Planned |
 
-To contribute, check the project board's **Ready** column or [open an issue](https://github.com/sevasek/orgcontext/issues/new/choose).
+To contribute, browse [issues ready for pickup](https://github.com/sevasek/orgcontext/issues?q=is%3Aopen+label%3A%22status%3Aready%22+no%3Aassignee) or [open a new issue](https://github.com/sevasek/orgcontext/issues/new/choose).
 
 ---
 

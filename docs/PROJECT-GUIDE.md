@@ -1,28 +1,33 @@
 # Project Guide — OrgContext Roadmap
 
-This document is for the **coordinator** (human or agent) managing the OrgContext project via GitHub Projects.
+This document is for the **coordinator** — the human (or agent) that scopes work, sets priorities, and keeps the project moving. It explains how the task system works, who interacts with what, and how to set up an optional kanban board for human visibility.
+
+> **TL;DR for coordinators:** GitHub Issues + Labels are the source of truth. Agents read and write issues only. A GitHub Project board is **optional and human-only** — if you use one, automate it from labels and PR state so nobody has to maintain it manually.
 
 ---
 
-## Project Board Setup
+## How the System Works
 
-Create a GitHub Project board named **OrgContext Roadmap** with the following configuration:
+| Layer | Audience | Tool | Purpose |
+|-------|----------|------|---------|
+| **Issues** | Agents and humans | `gh issue` | Atomic, claimable units of work with acceptance criteria |
+| **Labels** | Agents and humans | `gh label`, `gh issue edit` | Routing, status, priority, and category |
+| **Pull Requests** | Agents and humans | `gh pr`, `Fixes #N` | Review and merge; auto-closes the linked issue |
+| **Project Board** *(optional)* | Humans only | GitHub web UI | Visual kanban; never read or written by agents |
 
-### Columns (Kanban Layout)
+Agents follow [AGENT.md](../AGENT.md), which defines the issues-and-labels contract. They never inspect, mutate, or rely on the project board.
 
-| Column | Purpose |
-|--------|---------|
-| **Backlog** | Ideas, future entries, unscoped work. Not yet ready for agents. |
-| **Ready** | Scoped issues with clear acceptance criteria. Agents should pull from here. |
-| **In Progress** | An agent has claimed the issue and is actively working on it. |
-| **In Review** | A PR is open. Waiting for third-party or maintainer review. |
-| **Done** | PR has been merged. Work is complete. |
+### Why Not Use the Project Board for Agents?
 
-### Label Taxonomy
+GitHub Projects (v2) is a GraphQL-only API. Moving a card between columns requires resolving a project ID, item node ID, status field ID, and option ID, then issuing an `updateProjectV2ItemFieldValue` mutation via `gh api graphql`. Compare that to `gh issue edit N --add-label foo` — same outcome, vastly more reliable for an agent. Agents stick to issues; the board, if it exists, is a derived view for humans.
 
-Create these labels in the repository. They serve as the primary routing mechanism for agents.
+---
 
-#### Category Labels
+## Label Taxonomy
+
+Labels carry **all** state that GitHub doesn't natively track. Issue state (open/closed), assignee, and linked PRs cover the rest.
+
+### Category Labels — what kind of work?
 
 | Label | Color | Use |
 |-------|-------|-----|
@@ -32,15 +37,23 @@ Create these labels in the repository. They serve as the primary routing mechani
 | `docs` | `#5319e7` | README, guides, templates |
 | `infra` | `#e99695` | CI, repo config, project setup |
 
-#### Status Labels
+### Status Labels — agent-readable signals
 
 | Label | Color | Use |
 |-------|-------|-----|
-| `status:ready` | `#0e8a16` | Issue is scoped and ready to be claimed |
-| `status:blocked` | `#d73a4a` | Agent cannot proceed; needs human input |
-| `needs-decision` | `#fbca04` | Ambiguity requires coordinator decision |
+| `status:ready` | `#0e8a16` | Issue is scoped and claimable. Coordinator adds this when an issue is ready for an agent. Agent removes it on claim. |
+| `status:blocked` | `#d73a4a` | Agent could not proceed. Coordinator must unblock. |
+| `needs-decision` | `#fbca04` | Ambiguity that the coordinator must resolve before work continues. |
 
-#### Priority Labels
+There is **deliberately no** `status:in-progress`, `status:in-review`, or `status:done` label. Those states are encoded in the natural GitHub model:
+
+- **In progress** → open issue with an assignee
+- **In review** → open issue with a linked open PR (via `Fixes #N` in the PR body)
+- **Done** → issue is closed (auto-closes when the linked PR merges)
+
+This keeps the label set minimal and avoids drift between labels and reality.
+
+### Priority Labels
 
 | Label | Color | Use |
 |-------|-------|-----|
@@ -49,7 +62,7 @@ Create these labels in the repository. They serve as the primary routing mechani
 | `priority:2` | `#fbca04` | Nice to have — do when capacity allows |
 | `priority:3` | `#fef2c0` | Someday — no urgency |
 
-#### Special Labels
+### Special Labels
 
 | Label | Color | Use |
 |-------|-------|-----|
@@ -57,147 +70,182 @@ Create these labels in the repository. They serve as the primary routing mechani
 | `duplicate` | `#ffffff` | Issue duplicates another |
 | `wontfix` | `#ffffff` | Deliberately not doing this |
 
-### Setting Up Labels Quickly
-
-Run this script from the repo root to create all labels at once:
+### Setting Up Labels
 
 ```bash
 python scripts/setup_labels.py
 ```
 
-Or manually via `gh`:
-
-```bash
-# Category labels
-gh label create "entry:new" --color 0e8a16
-gh label create "entry:fix" --color fbca04
-gh label create "tooling" --color 1d76db
-gh label create "docs" --color 5319e7
-gh label create "infra" --color e99695
-
-# Status labels
-gh label create "status:ready" --color 0e8a16
-gh label create "status:blocked" --color d73a4a
-gh label create "needs-decision" --color fbca04
-
-# Priority labels
-gh label create "priority:0" --color b60205
-gh label create "priority:1" --color d93f0b
-gh label create "priority:2" --color fbca04
-gh label create "priority:3" --color fef2c0
-
-# Special labels
-gh label create "good-first-task" --color 7057ff
-```
+This is idempotent — re-running skips labels that already exist.
 
 ---
 
 ## Coordinator Workflow
 
-### 1. Seed the Board
+### 1. Seed Issues
 
-Create initial issues for known gaps using the issue templates. See `docs/index.md` → "Planned Entries" section for entry requests.
+Use the issue templates in `.github/ISSUE_TEMPLATE/`:
+
+- **New entries**: `New Entry` template (auto-applies `entry:new` and `status:ready`)
+- **Entry fixes**: `Entry Fix` template (auto-applies `entry:fix` and `status:ready`)
+- **Tooling, Docs, Infra**: respective templates
+
+For unscoped ideas, open issues *without* `status:ready` so agents skip them until you've fleshed out the acceptance criteria.
 
 ### 2. Prioritize
 
-Assign priority labels to each issue. Use `priority:0` sparingly — only for things that block other work or break the build.
+Add a `priority:N` label to every actionable issue. Use `priority:0` sparingly — only for genuinely blocking work.
 
-### 3. Move to Ready
+### 3. Promote to Ready
 
-Once an issue has clear acceptance criteria (all templates include these by default), move it from **Backlog** to **Ready**. Add the `status:ready` label.
+When an issue has clear acceptance criteria, ensure `status:ready` is on it. Agents poll:
 
-Agents will pull from the **Ready** column. If something is in **Backlog**, agents will ignore it.
+```bash
+gh issue list --label "status:ready" --search "no:assignee"
+```
 
-### 4. Monitor In Progress
+Anything not in that result set is invisible to agents.
 
-Track what agents are working on. If an issue sits in **In Progress** for too long, check the issue comments for blocker reports.
+### 4. Monitor Active Work
+
+```bash
+# Issues currently being worked on (have an assignee, still open)
+gh issue list --assignee "*" --state open
+
+# Open PRs (proxy for "in review")
+gh pr list --state open
+```
+
+If an issue has been assigned for too long with no PR, comment to check status.
 
 ### 5. Review
 
-When a PR is opened, the card should be in **In Review**. Review the PR or delegate to a third party. Enforce the rule: **the author never approves their own code**.
+When a PR opens with `Fixes #N`, GitHub automatically links it to the issue. Review the PR (or delegate to a third party).
+
+> **Never approve a PR opened by yourself or by the same agent that wrote it.** This is enforced by [AGENT.md](../AGENT.md) and is non-negotiable.
 
 ### 6. Done
 
-Once merged, the card moves to **Done**. If you use GitHub's `Fixes #N` convention in PR bodies, the issue auto-closes.
+The merged PR auto-closes the issue. No manual cleanup needed.
+
+### Handling Blocked Issues
+
+When an agent adds `status:blocked`, they will also unassign themselves and leave a comment explaining what they tried. Your job:
+
+1. Read the comment
+2. Resolve the blocker (clarify spec, fix dependency, decide on ambiguity)
+3. Remove `status:blocked`
+4. Re-add `status:ready` so an agent can pick it up again
+
+If the issue also has `needs-decision`, you're the decider — don't expect agents to choose for you.
+
+---
+
+## Optional: GitHub Project Board
+
+You can keep a project board purely as a **human kanban view**. Agents never touch it, so it has to be either auto-driven or manually maintained.
+
+### Recommended: Automated Board
+
+Create a GitHub Project (v2) with a Status field whose options match the natural GitHub state model:
+
+| Column | Driven by |
+|--------|-----------|
+| **Backlog** | Open issues without `status:ready` |
+| **Ready** | Open issues with `status:ready` and no assignee |
+| **In Progress** | Open issues with an assignee |
+| **In Review** | Open issues with a linked open PR |
+| **Done** | Closed issues |
+
+Use GitHub's built-in [project workflows](https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project) to move cards automatically:
+
+- "Item added to project" → set status based on labels (e.g., `status:ready` → **Ready**, otherwise → **Backlog**)
+- "Pull request opened that closes an issue" → set status to **In Review**
+- "Pull request merged" → set status to **Done**
+
+This keeps the board accurate without anyone (human or agent) updating it manually.
+
+### If the Board Falls Out of Sync
+
+**Trust the issues, not the board.** The board is a derived view; issues are the truth. The board is allowed to be slightly stale; never the other way around.
 
 ---
 
 ## Roadmap Synchronization
 
-The README.md contains a high-level roadmap summary. Keep it in sync with the project board:
+The README contains a high-level roadmap summary. Keep it in sync with reality.
 
 ### When to Update
 
-- After completing a milestone (column reaches a certain count or specific issues are done)
+- After completing a milestone
 - When adding a new phase to the roadmap
 - When priorities shift significantly
 
 ### How to Update
 
-1. Review the **Done** column in the project board
-2. Check the current roadmap table in `README.md`
-3. Update the milestones to reflect reality
-4. Commit with `docs: update roadmap to reflect completed work`
+1. Review closed issues by category and milestone
+2. Update the milestones in `README.md`
+3. Commit with `docs: update roadmap to reflect completed work`
 
 ### Current Roadmap Milestones
 
 | Phase | Focus | Indicators |
 |-------|-------|------------|
-| **Now** | Entry format, 10-20 quality entries, basic loaders, test suite | Core entries ≥ 15, tests passing |
+| **Now** | Entry format, 10–20 quality entries, basic loaders, test suite | Core entries ≥ 15, tests passing |
 | **Short-term** | PyPI package, more entries, framework integrations | `pip install orgcontext` works, 3+ integrations |
 | **Medium-term** | Versioning, RAG embeddings, MCP/server support | Embedding pipeline, versioned entries |
 | **Longer-term** | Industry-specific packs, enterprise sync tools | `industry/` directory populated |
 
 ---
 
-## Agent Delegation Patterns
+## Coordination Patterns
 
 ### Pattern 1: Batch Entry Creation
 
 When you want multiple entries written in parallel:
 
-1. Create issues for each entry using the `entry-new` template
-2. Assign all to **Backlog**, then move to **Ready**
-3. Agents will self-assign from **Ready** and work in parallel
+1. Create one issue per entry using the `New Entry` template
+2. Add `priority:N` labels
+3. Ensure each has `status:ready`
+4. Agents will self-assign and work in parallel
 
 ### Pattern 2: Coordinated Refactoring
 
 When a change spans multiple files (e.g., updating entry format):
 
 1. Create a single issue with a checklist of all files to touch
-2. Assign to a single agent (to avoid merge conflicts)
-3. Mark as `priority:1` to ensure it gets picked up before parallel work
+2. Mark `priority:1`
+3. Optionally pre-assign to a single agent to avoid merge conflicts
 
 ### Pattern 3: Fix Cascade
 
-When a validation change might break existing entries:
+When a tooling change might break existing entries:
 
 1. Create the tooling issue first with `priority:0`
-2. Create entry-fix issues for each broken entry, but keep them in **Backlog**
-3. Once the tooling PR merges, move entry-fix issues to **Ready**
+2. Create entry-fix issues for each broken entry, but **do not** add `status:ready` yet
+3. Once the tooling PR merges, add `status:ready` to the entry-fix issues so agents pick them up
 
 ---
 
 ## Useful gh Commands for Coordinators
 
 ```bash
-# List all open issues by category
-gh issue list --label "entry:new"
-gh issue list --label "tooling"
+# What's ready and waiting for an agent
+gh issue list --label "status:ready" --search "no:assignee"
 
-# List blocked issues
+# What's currently being worked on
+gh issue list --assignee "*" --state open
+
+# What's blocked
 gh issue list --label "status:blocked"
 
-# View issues needing decisions
+# What needs my decision
 gh issue list --label "needs-decision"
 
-# List ready-to-work issues (what agents should see)
-gh issue list --label "status:ready" --json number,title,assignees
-
-# Check PRs awaiting review
+# Open PRs awaiting review
 gh pr list --state open --json number,title,reviewDecision
 
-# Approve a PR (third-party review)
+# Approve a PR (third-party review only — never on your own work)
 gh pr review <N> --approve
 
 # Merge an approved PR

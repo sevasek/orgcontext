@@ -22,23 +22,24 @@ Do NOT work on entries outside organizational/leadership scope (e.g. general bus
 
 ## Finding Work
 
-### Via GitHub CLI
+GitHub Issues are the **single source of truth** for agent work. Use the GitHub CLI:
 
 ```bash
-# Find unassigned issues ready for work
-gh issue list --label "status:ready" --json number,title,labels,assignees
+# Find ready, unassigned issues — your primary work queue
+gh issue list --label "status:ready" --search "no:assignee" --json number,title,labels
 
-# Find issues by category
-gh issue list --label "entry:new" --state open
-gh issue list --label "tooling" --state open
+# Filter by category
+gh issue list --label "entry:new" --search "no:assignee" --state open
+gh issue list --label "tooling" --search "no:assignee" --state open
 
 # View a specific issue (full body, comments, acceptance criteria)
 gh issue view <N> --comments
 ```
 
-### Via Project Board
-
-View the **OrgContext Roadmap** project board on GitHub. Work from the **Ready** column only. Never pick up something that is already assigned or in the **In Progress** column.
+Rules:
+- Only pick up issues with the `status:ready` label. Open issues without it are still in backlog and not yet scoped for an agent.
+- Never pick up an issue that already has an assignee — that means another agent or contributor has claimed it.
+- The "OrgContext Roadmap" project board, if present, is a human-only kanban view. Agents do not need to read it or update it.
 
 ---
 
@@ -46,17 +47,16 @@ View the **OrgContext Roadmap** project board on GitHub. Work from the **Ready**
 
 Before you start:
 
-1. **Assign yourself** to the issue:
+1. **Assign yourself and clear the ready label** in one command — this is the atomic claim:
    ```bash
-   gh issue edit <N> --add-assigner "<your-agent-handle>"
+   gh issue edit <N> --add-assignee "@me" --remove-label "status:ready"
    ```
+   Removing `status:ready` prevents another agent from racing to claim the same issue. The assignee field is now the signal that work is in progress — no separate label needed.
 
 2. **Comment** on the issue:
    ```
    Claiming this issue. Starting work now.
    ```
-
-3. **Move the card** to **In Progress** in the project board (if applicable).
 
 Never work on an issue that already has an assignee. If you need a task that is assigned, ask the coordinator — do not steal it.
 
@@ -192,8 +192,8 @@ Fixes #<issue-number>
 
 After opening your PR:
 
-1. Move the project board card to **In Review**
-2. Leave a comment: `Ready for review.`
+1. Make sure the PR body contains `Fixes #<issue-number>` so GitHub links the PR to the issue and auto-closes it on merge.
+2. Leave a comment on the issue: `PR opened: #<pr-number>. Ready for review.`
 3. Wait for approval before merging. Do not merge your own code.
 
 ---
@@ -202,13 +202,12 @@ After opening your PR:
 
 If you are blocked:
 
-1. **Comment** on the issue with a clear description of what is blocking you
-2. **Add the label** `status:blocked`:
+1. **Comment** on the issue with a clear description of what is blocking you and what you have already tried
+2. **Add the `status:blocked` label and unassign yourself** so the coordinator can see the issue is parked, not actively progressing:
    ```bash
-   gh issue edit <N> --add-label "status:blocked"
+   gh issue edit <N> --add-label "status:blocked" --remove-assignee "@me"
    ```
-3. **Move the card** to **Backlog** in the project board
-4. If the blocker requires a decision (ambiguous spec, conflicting guidance), add the label `needs-decision` and wait for the coordinator
+3. If the blocker requires a decision (ambiguous spec, conflicting guidance), also add the `needs-decision` label and wait for the coordinator
 
 Common blockers:
 - Entry scope is unclear or overlaps with existing entry
@@ -237,9 +236,10 @@ When creating or editing an entry:
 
 | Need | Command |
 |------|---------|
-| List ready tasks | `gh issue list --label "status:ready"` |
+| List ready, unassigned tasks | `gh issue list --label "status:ready" --search "no:assignee"` |
 | View issue details | `gh issue view <N> --comments` |
-| Claim an issue | `gh issue edit <N> --add-assigner "<handle>"` |
+| Claim an issue (atomic) | `gh issue edit <N> --add-assignee "@me" --remove-label "status:ready"` |
+| Mark blocked | `gh issue edit <N> --add-label "status:blocked" --remove-assignee "@me"` |
 | Validate entries | `python scripts/validate_entry.py --all` |
 | Run tests | `pytest tests/ -v` |
 | Run linter | `ruff check orgcontext/ scripts/ tests/` |

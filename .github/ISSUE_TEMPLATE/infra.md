@@ -1,6 +1,6 @@
 ---
 name: "Infrastructure"
-description: "CI workflows, repo config, project board setup, or other infrastructure"
+description: "CI workflows, repo config, or other infrastructure"
 title: "[Infra] <description>"
 labels: ["infra", "status:ready"]
 ---
@@ -17,4 +17,4 @@ labels: ["infra", "status:ready"]
 ## Acceptance Criteria
 - [ ] Change is documented in relevant docs
 - [ ] Does not break existing CI or validation workflows
-- [ ] Project board and labels updated if applicable
+- [ ] Labels updated if applicable
