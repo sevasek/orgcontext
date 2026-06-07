@@ -1,0 +1,2 @@
+[console_scripts]
+orgcontext-mcp = orgcontext.mcp_server:main
