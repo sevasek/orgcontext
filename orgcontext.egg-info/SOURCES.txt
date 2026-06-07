@@ -2,8 +2,11 @@ LICENSE
 README.md
 pyproject.toml
 orgcontext/__init__.py
+orgcontext/mcp_server.py
 orgcontext.egg-info/PKG-INFO
 orgcontext.egg-info/SOURCES.txt
 orgcontext.egg-info/dependency_links.txt
+orgcontext.egg-info/entry_points.txt
 orgcontext.egg-info/requires.txt
 orgcontext.egg-info/top_level.txt
+tests/test_core.py
