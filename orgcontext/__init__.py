@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import re
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -25,7 +26,14 @@ except ImportError:
     HAS_YAML = False
 
 __version__ = "0.2.0"
-__all__ = ["load", "inject", "list_entries", "OrgContextEntry"]
+__all__ = [
+    "load",
+    "inject",
+    "list_entries",
+    "search_entries",
+    "get_frontmatter",
+    "OrgContextEntry",
+]
 
 # ── Path resolution ────────────────────────────────────────────────────────────
 
@@ -217,6 +225,16 @@ def load(entry_id: str, corpus_root: Optional[Path] = None) -> OrgContextEntry:
         raw_markdown=raw,
     )
 
+    if entry.deprecated:
+        warnings.warn(
+            f"Entry '{entry.id}' is marked as deprecated. "
+            "Consider migrating to a newer alternative.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+    return entry
+
 
 def inject(
     entry_ids: list[str],
@@ -282,3 +300,52 @@ def list_entries(
             }
         )
     return results
+
+
+def search_entries(
+    query: str,
+    corpus_root: Optional[Path] = None,
+) -> list[dict]:
+    """
+    Search entries by keyword across id, title, tags, and category.
+
+    Args:
+        query: Search string (case-insensitive).
+        corpus_root: Optional override for the corpus root directory.
+
+    Returns:
+        List of matching entry dicts (same structure as list_entries).
+    """
+    q = query.lower()
+    all_entries = list_entries(corpus_root=corpus_root)
+    matches = [
+        e for e in all_entries
+        if (
+            q in e["id"].lower()
+            or q in e["title"].lower()
+            or q in e.get("category", "").lower()
+            or any(q in (tag or "").lower() for tag in e.get("tags", []))
+            or any(q in (str(a) or "").lower() for a in e.get("authors", []))
+        )
+    ]
+    return matches
+
+
+def get_frontmatter(
+    entry_id: str,
+    corpus_root: Optional[Path] = None,
+) -> dict:
+    """
+    Return the raw frontmatter dictionary for a given entry ID.
+
+    Useful for accessing all metadata without loading the full entry.
+    """
+    root = corpus_root or _corpus_root()
+    # Find the file
+    for md_file in root.rglob("*.md"):
+        if not any(part in ("core", "industry") for part in md_file.parts):
+            continue
+        if md_file.stem == entry_id:
+            raw = md_file.read_text(encoding="utf-8")
+            return _parse_frontmatter(raw)
+    raise KeyError(f"Entry not found: {entry_id}")

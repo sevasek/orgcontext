@@ -1,4 +1,4 @@
-Last updated: 2026-04-27
+Last updated: 2026-06-08
 
 # Entry Format Specification
 
@@ -34,6 +34,29 @@ parent: string              # OPTIONAL. Only for industry forks.
 
 **Note on `authors`:**  
 We strongly encourage adding your name (or GitHub handle) when you create a new entry or make substantial changes. This helps recognize contributions and builds a sense of ownership in the corpus.
+
+### Using Metadata in Code
+
+The Python API exposes all frontmatter fields:
+
+```python
+from orgcontext import load, list_entries, get_frontmatter, search_entries
+
+entry = load("my-entry")
+print(entry.authors)
+print(entry.references)
+print(entry.deprecated)
+print(entry.to_dict())   # full serializable representation
+
+# Lightweight metadata without full load
+fm = get_frontmatter("my-entry")
+print(fm["last_updated"])
+
+# Search now also considers authors and metadata
+matches = search_entries("Jane Doe")
+```
+
+All `list_entries()` results include `authors`, `version`, `last_updated`, and `deprecated`.
 
 ### Valid Categories
 

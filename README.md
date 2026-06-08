@@ -39,7 +39,7 @@ pip install -e .
 ### Use the Python API
 
 ```python
-from orgcontext import load, inject, list_entries
+from orgcontext import load, inject, list_entries, search_entries, get_frontmatter
 
 # Load a single entry and access structured sections
 entry = load("servant-leadership")
@@ -70,6 +70,14 @@ print(entries[0]["last_updated"])
 # Convenience method for serialization / RAG pipelines
 entry_dict = entry.to_dict()           # includes sections by default
 minimal = entry.to_dict(include_sections=False)
+
+# Search the corpus programmatically
+results = search_entries("leadership")
+for e in results:
+    print(e["id"], e["title"])
+
+# Or search for specific authors
+results = search_entries("Paul Seville")
 ```
 
 ### Copy-paste
@@ -80,6 +88,24 @@ Each entry has a `## Prompt Snippet` section. Copy it directly into your agent's
 
 ```python
 corpus_dir = "core/"  # 17 validated Markdown entries, ready for embedding
+```
+
+### Command Line Interface
+
+After installing, you can use the `orgcontext` CLI:
+
+```bash
+# List all entries
+orgcontext list
+
+# Filter by category
+orgcontext list --category governance
+
+# Get full details for one entry
+orgcontext get okrs
+
+# Search across the corpus
+orgcontext search leadership
 ```
 
 ---
