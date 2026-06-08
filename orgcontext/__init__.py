@@ -115,6 +115,36 @@ class OrgContextEntry:
         for heading, content in zip(it, it):
             self._sections[heading.strip()] = content.strip()
 
+    def to_dict(self, include_sections: bool = True) -> dict:
+        """Return a JSON-serializable dict representation of the entry.
+
+        Args:
+            include_sections: If True, includes common section properties.
+        """
+        data = {
+            "id": self.id,
+            "title": self.title,
+            "category": self.category,
+            "tags": self.tags,
+            "related": self.related,
+            "version": self.version,
+            "last_updated": self.last_updated,
+            "authors": self.authors,
+            "references": self.references,
+            "deprecated": self.deprecated,
+            "raw_markdown": self.raw_markdown,
+        }
+        if include_sections:
+            data.update({
+                "definition": self.definition,
+                "when_to_apply": self.when_to_apply,
+                "decision_heuristics": self.decision_heuristics,
+                "anti_patterns": self.anti_patterns,
+                "prompt_snippet": self.prompt_snippet,
+                "see_also": self.see_also,
+            })
+        return data
+
 
 # ── Core API ───────────────────────────────────────────────────────────────────
 

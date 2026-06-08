@@ -53,6 +53,23 @@ context_block = inject(["okrs", "raci", "mission-alignment"])
 # Browse available entries
 all_entries = list_entries()
 strategy_entries = list_entries(category="strategy-execution")
+
+# New: Rich metadata is now available on every entry
+entry = load("okrs")
+print(entry.authors)          # ['Paul Seville']
+print(entry.version)          # '1.0.0'
+print(entry.last_updated)     # '2026-06-08'
+print(entry.deprecated)       # False
+print(entry.references)       # list of source materials
+
+# list_entries() now returns the full metadata too
+entries = list_entries()
+print(entries[0]["authors"])     # list of authors
+print(entries[0]["last_updated"])
+
+# Convenience method for serialization / RAG pipelines
+entry_dict = entry.to_dict()           # includes sections by default
+minimal = entry.to_dict(include_sections=False)
 ```
 
 ### Copy-paste
@@ -125,7 +142,7 @@ See [Corpus Index](docs/index.md) for all 17 current entries.
 ## Current Status
 
 - **17 validated core entries** across 6 categories (all passing automated validation + test suite)
-- Python package with `load()`, `inject()`, `list_entries()` API
+- Python package with `load()`, `inject()`, `list_entries()`, and full metadata (`authors`, `references`, `deprecated`, `to_dict()`)
 - LangGraph and CrewAI integrations
 - Multi-agent workflow with AGENT.md, issue templates, and CI validation
 - Industry-specific entries (`industry/`) and PyPI release in progress

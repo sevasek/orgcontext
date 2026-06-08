@@ -63,6 +63,22 @@ class TestLoad:
         assert "Measure What Matters" in str(entry.references) or "John Doerr" in str(entry.references)
         assert entry.deprecated is False
 
+    def test_to_dict_returns_expected_keys(self):
+        entry = load("servant-leadership", corpus_root=CORPUS_ROOT.parent)
+        d = entry.to_dict()
+        for key in ["id", "title", "category", "authors", "version", "last_updated", "deprecated", "prompt_snippet"]:
+            assert key in d
+        assert d["id"] == "servant-leadership"
+        assert d["authors"] == ["Paul Seville"]
+        assert d["last_updated"] == "2026-06-08"
+
+    def test_to_dict_without_sections(self):
+        entry = load("raci", corpus_root=CORPUS_ROOT.parent)
+        d = entry.to_dict(include_sections=False)
+        assert "definition" not in d
+        assert "prompt_snippet" not in d
+        assert d["id"] == "raci"
+
 
 class TestInject:
     def test_inject_returns_combined_snippets(self):
