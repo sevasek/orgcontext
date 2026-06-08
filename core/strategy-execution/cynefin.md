@@ -5,7 +5,7 @@ category: strategy-execution
 tags: [decision-making, complexity, sensemaking, leadership, problem-solving]
 related: [servant-leadership, situational-leadership, okrs, mission-alignment]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Dave Snowden & Mary Boone, 'A Leader's Framework for Decision Making', HBR 2007"

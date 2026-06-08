@@ -5,7 +5,7 @@ category: culture-values
 tags: [culture, feedback, communication, growth, performance]
 related: [psychological-safety, servant-leadership, trust]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Amy Edmondson, *The Fearless Organization*, 2018"

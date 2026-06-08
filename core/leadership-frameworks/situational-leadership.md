@@ -5,7 +5,7 @@ category: leadership-frameworks
 tags: [leadership, adaptability, coaching, delegation, development]
 related: [servant-leadership, transformational-leadership, decision-rights]
 version: 1.0.0
-last_updated: 2026-04-28
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Paul Hersey & Kenneth Blanchard, *Management of Organizational Behavior*, 1969"

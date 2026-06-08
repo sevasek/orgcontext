@@ -5,7 +5,7 @@ category: strategy-execution
 tags: [goals, strategy, measurement, alignment, performance]
 related: [mission-alignment, raci, north-star-metric, strategy-map]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "John Doerr, *Measure What Matters*, 2018"

@@ -5,7 +5,7 @@ category: leadership-frameworks
 tags: [leadership, vision, inspiration, change-management, motivation]
 related: [servant-leadership, situational-leadership, mission-alignment, vision]
 version: 1.0.0
-last_updated: 2026-04-28
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "James MacGregor Burns, *Leadership*, 1978"

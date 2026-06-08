@@ -5,7 +5,7 @@ category: strategy-execution
 tags: [strategy, visualization, balanced-scorecard, alignment, execution]
 related: [mission-alignment, vision, okrs, north-star-metric]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Robert Kaplan & David Norton, *The Strategy-Focused Organization*, 2001"

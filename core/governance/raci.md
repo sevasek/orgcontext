@@ -5,7 +5,7 @@ category: governance
 tags: [governance, decision-rights, roles, accountability, coordination]
 related: [decision-rights, product-owner, okrs, escalation-path]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Project Management Institute, *PMBOK Guide*"

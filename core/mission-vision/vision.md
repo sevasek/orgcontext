@@ -5,7 +5,7 @@ category: mission-vision
 tags: [vision, strategy, leadership, inspiration, direction]
 related: [mission-alignment, north-star-metric, servant-leadership]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Jim Collins & Jerry Porras, *Built to Last*, 1994"
