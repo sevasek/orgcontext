@@ -5,7 +5,7 @@ category: strategy-execution
 tags: [metrics, strategy, growth, alignment, product]
 related: [mission-alignment, okrs, vision]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Sean Ellis, *Hacking Growth*, 2017"

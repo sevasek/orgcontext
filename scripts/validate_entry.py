@@ -31,6 +31,10 @@ VALID_CATEGORIES = [
     "governance",
     "culture-values",
     "strategy-execution",
+    # industry/ sectors
+    "tech-startup",
+    "enterprise",
+    "nonprofit",
 ]
 REQUIRED_SECTIONS = [
     "Definition",

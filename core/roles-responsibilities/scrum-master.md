@@ -5,7 +5,7 @@ category: roles-responsibilities
 tags: [agile, scrum, facilitation, process, coaching]
 related: [product-owner, raci, servant-leadership]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Schwaber & Sutherland, *The Scrum Guide*, 2020"

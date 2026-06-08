@@ -16,7 +16,7 @@ from collections import defaultdict
 # ── Config ─────────────────────────────────────────────────────────────────────
 REPO_ROOT = Path(__file__).parent.parent
 CORE_DIR = REPO_ROOT / "core"
-INDUSTRY_DIR = REPO_ROOT / "industry"
+INDUSTRY_DIR = CORE_DIR / "industry"
 DOCS_DIR = REPO_ROOT / "docs"
 OUTPUT_FILE = DOCS_DIR / "index.md"
 
@@ -48,8 +48,12 @@ def build_index():
     """Scan entries and write docs/INDEX.md in the exact requested format."""
     entries_by_category = defaultdict(list)
 
-    # Scan core/
+    industry_by_sector = defaultdict(list)
+
+    # Scan core/ — exclude industry/ subdirectory
     for md_file in sorted(CORE_DIR.rglob("*.md")):
+        if INDUSTRY_DIR.exists() and md_file.is_relative_to(INDUSTRY_DIR):
+            continue
         content = md_file.read_text(encoding="utf-8")
         fm = parse_frontmatter(content)
         if not fm or not fm.get("id") or not fm.get("title"):
@@ -62,6 +66,22 @@ def build_index():
             "tags": fm.get("tags", []),
             "path": str(rel_path)
         })
+
+    # Scan core/industry/ separately
+    if INDUSTRY_DIR.exists():
+        for md_file in sorted(INDUSTRY_DIR.rglob("*.md")):
+            content = md_file.read_text(encoding="utf-8")
+            fm = parse_frontmatter(content)
+            if not fm or not fm.get("id") or not fm.get("title"):
+                continue
+            rel_path = md_file.relative_to(REPO_ROOT)
+            sector = md_file.parent.name
+            industry_by_sector[sector].append({
+                "id": fm["id"],
+                "title": fm["title"],
+                "tags": fm.get("tags", []),
+                "path": str(rel_path)
+            })
 
     # Ensure docs/ exists
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
@@ -103,7 +123,7 @@ def build_index():
             lines.append(f"| {link} | {e['title']} | {tags_str} |")
         lines.append("")
 
-    # Add any extra categories that might appear (alphabetically)
+    # Add any extra core categories that might appear (alphabetically)
     extra_cats = sorted(set(entries_by_category.keys()) - set(preferred_order))
     for cat in extra_cats:
         entries = entries_by_category[cat]
@@ -115,6 +135,22 @@ def build_index():
             link = f"[{e['id']}]({e['path']})"
             lines.append(f"| {link} | {e['title']} | {tags_str} |")
         lines.append("")
+
+    # Industry entries section
+    if industry_by_sector:
+        industry_total = sum(len(v) for v in industry_by_sector.values())
+        lines.append(f"## Industry Entries ({industry_total})")
+        lines.append("")
+        for sector in sorted(industry_by_sector.keys()):
+            entries = industry_by_sector[sector]
+            lines.append(f"### {sector}")
+            lines.append("| ID | Title | Tags |")
+            lines.append("|----|-------|------|")
+            for e in entries:
+                tags_str = ", ".join(e["tags"]) if e["tags"] else ""
+                link = f"[{e['id']}]({e['path']})"
+                lines.append(f"| {link} | {e['title']} | {tags_str} |")
+            lines.append("")
 
     # Planned Entries section
     lines.append("---")

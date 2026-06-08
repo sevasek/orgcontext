@@ -5,7 +5,7 @@ category: governance
 tags: [governance, decision-making, authority, accountability, efficiency]
 related: [raci, escalation-path, servant-leadership, okrs]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Michael Mankins & Richard Steele, Harvard Business Review"

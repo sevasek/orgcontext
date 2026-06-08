@@ -5,7 +5,7 @@ category: leadership-frameworks
 tags: [leadership, management, culture, empowerment, teams]
 related: [transformational-leadership, psychological-safety, trust]
 version: 1.0.0
-last_updated: 2026-04-27
+last_updated: 2026-06-08
 authors: ["Paul Seville"]
 references:
   - "Robert K. Greenleaf, *The Servant as Leader*, 1970"

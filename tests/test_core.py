@@ -54,7 +54,14 @@ class TestLoad:
     def test_load_version_and_date(self):
         entry = load("servant-leadership", corpus_root=CORPUS_ROOT.parent)
         assert entry.version == "1.0.0"
-        assert entry.last_updated == "2026-04-27"
+        assert entry.last_updated == "2026-06-08"
+
+    def test_load_authors_and_references(self):
+        entry = load("okrs", corpus_root=CORPUS_ROOT.parent)
+        assert entry.authors == ["Paul Seville"]
+        assert len(entry.references) >= 1
+        assert "Measure What Matters" in str(entry.references) or "John Doerr" in str(entry.references)
+        assert entry.deprecated is False
 
 
 class TestInject:
@@ -104,6 +111,10 @@ class TestListEntries:
             assert "category" in entry
             assert "tags" in entry
             assert "path" in entry
+            assert "authors" in entry
+            assert "version" in entry
+            assert "last_updated" in entry
+            assert "deprecated" in entry
 
     def test_list_entries_empty_category(self):
         entries = list_entries(category="nonexistent-category", corpus_root=CORPUS_ROOT.parent)
@@ -182,6 +193,9 @@ Some definition.
         assert entry.related == []
         assert entry.version == "1.0.0"
         assert entry.last_updated == ""
+        assert entry.authors == []
+        assert entry.references == []
+        assert entry.deprecated is False
         assert entry.raw_markdown == ""
 
 

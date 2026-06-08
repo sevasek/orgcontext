@@ -24,7 +24,7 @@ try:
 except ImportError:
     HAS_YAML = False
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = ["load", "inject", "list_entries", "OrgContextEntry"]
 
 # ── Path resolution ────────────────────────────────────────────────────────────
@@ -59,6 +59,9 @@ class OrgContextEntry:
     related: list[str] = field(default_factory=list)
     version: str = "1.0.0"
     last_updated: str = ""
+    authors: list[str] = field(default_factory=list)
+    references: list[str] = field(default_factory=list)
+    deprecated: bool = False
     raw_markdown: str = ""
 
     # Parsed sections (populated lazily)
@@ -178,6 +181,9 @@ def load(entry_id: str, corpus_root: Optional[Path] = None) -> OrgContextEntry:
         related=fm.get("related", []) or [],
         version=fm.get("version", "1.0.0"),
         last_updated=str(fm.get("last_updated", "")),
+        authors=fm.get("authors", []) or [],
+        references=fm.get("references", []) or [],
+        deprecated=bool(fm.get("deprecated", False)),
         raw_markdown=raw,
     )
 
@@ -218,7 +224,8 @@ def list_entries(
         corpus_root: Optional override for the corpus root directory.
 
     Returns:
-        List of dicts with keys: id, title, category, tags, path.
+        List of dicts with keys: id, title, category, tags, path, authors,
+        version, last_updated, deprecated.
     """
     root = corpus_root or _corpus_root()
     results = []
@@ -238,6 +245,10 @@ def list_entries(
                 "category": fm.get("category", ""),
                 "tags": fm.get("tags", []) or [],
                 "path": str(md_file.relative_to(root)),
+                "authors": fm.get("authors", []) or [],
+                "version": fm.get("version", "1.0.0"),
+                "last_updated": str(fm.get("last_updated", "")),
+                "deprecated": bool(fm.get("deprecated", False)),
             }
         )
     return results
