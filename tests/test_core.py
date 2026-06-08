@@ -112,7 +112,7 @@ class TestInject:
 class TestListEntries:
     def test_list_all_entries(self):
         entries = list_entries(corpus_root=CORPUS_ROOT.parent)
-        assert len(entries) == 28
+        assert len(entries) == 31
         ids = [e["id"] for e in entries]
         assert "servant-leadership" in ids
         assert "okrs" in ids
@@ -120,11 +120,13 @@ class TestListEntries:
 
     def test_list_entries_by_category(self):
         entries = list_entries(category="governance", corpus_root=CORPUS_ROOT.parent)
-        assert len(entries) == 3
+        assert len(entries) == 5
         ids = [e["id"] for e in entries]
         assert "raci" in ids
         assert "decision-rights" in ids
         assert "escalation-path" in ids
+        assert "steering-committee" in ids
+        assert "working-group" in ids
 
     def test_list_entries_each_has_required_keys(self):
         entries = list_entries(corpus_root=CORPUS_ROOT.parent)

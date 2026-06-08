@@ -2,13 +2,14 @@
 
 > Auto-generated. Do not edit manually. Run `python scripts/build_index.py` to regenerate.
 
-## Core Entries (28)
+## Core Entries (31)
 
 ### mission-vision
 | ID | Title | Tags |
 |----|-------|------|
 | [bhag](core/mission-vision/bhag.md) | BHAG | vision, strategy, ambition, long-term, goals, inspiration, jim-collins |
 | [mission-alignment](core/mission-vision/mission-alignment.md) | Mission Alignment | mission, strategy, alignment, decision-making, culture |
+| [organizational-purpose](core/mission-vision/organizational-purpose.md) | Organizational Purpose | purpose, mission, vision, identity, strategy, culture, meaning |
 | [vision](core/mission-vision/vision.md) | Vision | vision, strategy, leadership, inspiration, direction |
 
 ### leadership-frameworks
@@ -36,6 +37,8 @@
 | [decision-rights](core/governance/decision-rights.md) | Decision Rights | governance, decision-making, authority, accountability, efficiency |
 | [escalation-path](core/governance/escalation-path.md) | Escalation Path | governance, decision-making, conflict-resolution, accountability, hierarchy |
 | [raci](core/governance/raci.md) | RACI (Responsible, Accountable, Consulted, Informed) | governance, decision-rights, roles, accountability, coordination |
+| [steering-committee](core/governance/steering-committee.md) | Steering Committee | governance, oversight, strategy, decision-making, escalation, stakeholders |
+| [working-group](core/governance/working-group.md) | Working Group | governance, coordination, temporary, cross-functional, decision-making |
 
 ### culture-values
 | ID | Title | Tags |
