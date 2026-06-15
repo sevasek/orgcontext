@@ -21,11 +21,12 @@ from typing import Optional
 
 try:
     from crewai_tools import tool as crewai_tool
+
     HAS_CREWAI = True
 except ImportError:
     HAS_CREWAI = False
 
-from orgcontext import load, inject, list_entries
+from orgcontext import load, inject
 
 
 def org_context_tool(
@@ -43,9 +44,7 @@ def org_context_tool(
         A CrewAI-compatible tool function.
     """
     if not HAS_CREWAI:
-        raise ImportError(
-            "crewai-tools is required. Install with: pip install crewai-tools"
-        )
+        raise ImportError("crewai-tools is required. Install with: pip install crewai-tools")
 
     # Pre-load the context block once
     context_block = inject(entries, corpus_root=corpus_root)
