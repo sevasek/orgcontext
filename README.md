@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
-[![Entries](https://img.shields.io/badge/corpus-17%20entries-blue)](#corpus-structure)
+[![Entries](https://img.shields.io/badge/corpus-34%20entries-blue)](#corpus-structure)
 
 ---
 
@@ -87,7 +87,7 @@ Each entry has a `## Prompt Snippet` section. Copy it directly into your agent's
 ### Point a RAG store at the corpus
 
 ```python
-corpus_dir = "core/"  # 17 validated Markdown entries, ready for embedding
+corpus_dir = "core/"  # 34 validated Markdown entries, ready for embedding
 ```
 
 ### Command Line Interface
@@ -155,23 +155,23 @@ core/
 ├── governance/              # RACI, decision rights, escalation paths
 ├── culture-values/          # Psychological safety, trust, belonging
 ├── strategy-execution/      # OKRs, Cynefin, strategy maps, etc.
-└── industry/                # Sector-specific entries (coming soon)
-    ├── tech-startup/
-    ├── enterprise/
-    └── nonprofit/
+└── industry/                # Sector-specific entries
+    ├── tech-startup/        # Product–Market Fit, and more
+    ├── enterprise/          # Digital Transformation, and more
+    └── nonprofit/           # Theory of Change, and more
 ```
 
-See [Corpus Index](docs/index.md) for all 17 current entries.
+See [Corpus Index](docs/index.md) for all 34 current entries.
 
 ---
 
 ## Current Status
 
-- **17 validated core entries** across 6 categories (all passing automated validation + test suite)
+- **34 validated entries** — 31 core entries across 6 categories + 3 industry entries (tech-startup, enterprise, nonprofit), all passing automated validation + test suite
 - Python package with `load()`, `inject()`, `list_entries()`, and full metadata (`authors`, `references`, `deprecated`, `to_dict()`)
 - LangGraph and CrewAI integrations
 - Multi-agent workflow with AGENT.md, issue templates, and CI validation
-- Industry-specific entries (`industry/`) and PyPI release in progress
+- PyPI release in progress
 
 ---
 
@@ -199,16 +199,15 @@ We welcome contributions from leadership coaches, PMs, engineers, and agent buil
 
 | Phase | Focus | Status |
 |-------|-------|--------|
-| **Now** | Entry format, 17 quality entries, Python package, test suite, multi-agent workflow | ✅ Complete |
-| **Short-term** | PyPI release, more entries (25+), industry packs, additional integrations | In progress |
+| **Now** | Entry format, 31 quality core entries, Python package, test suite, multi-agent workflow | ✅ Complete |
+| **Short-term** | Industry packs (3 initial entries ✅), PyPI release, additional integrations | In progress |
 | **Medium-term** | Versioning, RAG-friendly embeddings, MCP server support | Planned |
 | **Longer-term** | Enterprise sync tools, hosted corpus API | Planned |
 
-**High-priority gaps (contributions welcome):**  
-Roles: `product-manager`, `engineering-manager`, `cto`  
-Leadership: `adaptive-leadership`, `distributed-leadership`  
-Culture: `belonging`, `team-norms`  
-Strategy: `change-management`, `portfolio-management`
+**Next contributions welcome:**  
+Industry packs: more entries under `tech-startup/`, `enterprise/`, `nonprofit/`  
+New sectors: `healthcare/`, `education/`, `government/`  
+Integrations: LlamaIndex, AutoGen, OpenAI Agents SDK
 
 ---
 

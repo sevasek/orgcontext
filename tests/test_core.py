@@ -112,7 +112,7 @@ class TestInject:
 class TestListEntries:
     def test_list_all_entries(self):
         entries = list_entries(corpus_root=CORPUS_ROOT.parent)
-        assert len(entries) == 31
+        assert len(entries) == 34
         ids = [e["id"] for e in entries]
         assert "servant-leadership" in ids
         assert "okrs" in ids
