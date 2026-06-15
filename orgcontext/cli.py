@@ -6,6 +6,7 @@ Usage examples:
     orgcontext get okrs
     orgcontext search "leadership"
 """
+
 from __future__ import annotations
 
 import argparse
@@ -23,9 +24,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # list
     list_parser = subparsers.add_parser("list", help="List available entries")
-    list_parser.add_argument(
-        "--category", "-c", help="Filter by category (e.g. governance)"
-    )
+    list_parser.add_argument("--category", "-c", help="Filter by category (e.g. governance)")
 
     # get
     get_parser = subparsers.add_parser("get", help="Load and print a specific entry")
@@ -34,6 +33,13 @@ def main(argv: list[str] | None = None) -> int:
     # search
     search_parser = subparsers.add_parser("search", help="Search entries by keyword")
     search_parser.add_argument("query", help="Search query")
+    search_parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Return every entry (skip the empty-query guardrail). The Python "
+        "API returns all entries for an empty query, but the CLI treats "
+        "an empty query as a likely mistake.",
+    )
 
     args = parser.parse_args(argv)
 
@@ -50,20 +56,33 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "get":
         try:
             entry = oc.load(args.id)
-            print(f"# {entry.title}\n")
-            print(f"Category: {entry.category}")
-            print(f"Authors: {', '.join(entry.authors) if entry.authors else 'unknown'}")
-            print(f"Last updated: {entry.last_updated}")
-            if entry.deprecated:
-                print("**DEPRECATED**")
-            print("\n" + entry.prompt_snippet)
-            return 0
-        except Exception as e:
+        except (FileNotFoundError, ValueError) as e:
             print(f"Error: {e}", file=sys.stderr)
             return 1
+        print(f"# {entry.title}\n")
+        print(f"Category: {entry.category}")
+        print(f"Authors: {', '.join(entry.authors) if entry.authors else 'unknown'}")
+        print(f"Last updated: {entry.last_updated}")
+        if entry.deprecated:
+            print("**DEPRECATED**")
+        print("\n" + entry.prompt_snippet)
+        return 0
 
     elif args.command == "search":
-        results = oc.search_entries(args.query)
+        if not args.query and not args.all:
+            print(
+                "Error: empty query would return every entry. "
+                "Pass a search term, or use --all to list everything.",
+                file=sys.stderr,
+            )
+            return 2
+        # --all is "list everything" — route to list_entries() directly
+        # rather than search_entries(""), which deliberately returns []
+        # for empty queries (and would print "No matches" here).
+        if args.all:
+            results = oc.list_entries()
+        else:
+            results = oc.search_entries(args.query)
         if not results:
             print(f"No matches for '{args.query}'")
             return 0
