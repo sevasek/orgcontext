@@ -54,6 +54,7 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 # ── Helpers ─────────────────────────────────────────────────────────────────────
 
+
 def _parse_frontmatter(raw: str) -> tuple[dict, str]:
     """Parse YAML frontmatter. Prefers PyYAML; robust fallback for multi-line lists."""
     match = re.match(r"^---\n(.*?)\n---", raw, re.DOTALL)
@@ -61,12 +62,13 @@ def _parse_frontmatter(raw: str) -> tuple[dict, str]:
         return {}, raw
 
     fm_text = match.group(1)
-    body = raw[match.end():]
+    body = raw[match.end() :]
 
     fm: dict = {}
 
     try:
         import yaml
+
         fm = yaml.safe_load(fm_text) or {}
         return fm, body  # PyYAML is authoritative when available
     except ImportError:
@@ -79,7 +81,7 @@ def _parse_frontmatter(raw: str) -> tuple[dict, str]:
     while i < len(lines):
         line = lines[i].rstrip()
         stripped = line.strip()
-        if not stripped or stripped.startswith('#'):
+        if not stripped or stripped.startswith("#"):
             i += 1
             continue
 
@@ -136,6 +138,7 @@ def _word_count(text: str) -> int:
 
 # ── Validation ──────────────────────────────────────────────────────────────────
 
+
 def validate_file(path: Path) -> list[str]:
     """Return a list of error strings. Empty list = valid."""
     errors: list[str] = []
@@ -152,22 +155,16 @@ def validate_file(path: Path) -> list[str]:
             errors.append(f"MISSING required frontmatter field: '{field}'")
 
     if "id" in fm and fm["id"] != path.stem:
-        errors.append(
-            f"MISMATCH: frontmatter id='{fm['id']}' but filename is '{path.stem}.md'"
-        )
+        errors.append(f"MISMATCH: frontmatter id='{fm['id']}' but filename is '{path.stem}.md'")
 
     if "category" in fm and fm["category"] not in VALID_CATEGORIES:
-        errors.append(
-            f"INVALID category '{fm['category']}'. Valid: {', '.join(VALID_CATEGORIES)}"
-        )
+        errors.append(f"INVALID category '{fm['category']}'. Valid: {', '.join(VALID_CATEGORIES)}")
 
     if "version" in fm and not SEMVER_RE.match(str(fm["version"])):
         errors.append(f"INVALID version '{fm['version']}': must be semver (e.g. 1.0.0)")
 
     if "last_updated" in fm and not DATE_RE.match(str(fm["last_updated"])):
-        errors.append(
-            f"INVALID last_updated '{fm['last_updated']}': must be YYYY-MM-DD"
-        )
+        errors.append(f"INVALID last_updated '{fm['last_updated']}': must be YYYY-MM-DD")
 
     # List field validation (authors, references, tags, related)
     list_fields = ["authors", "references", "tags", "related"]
@@ -175,7 +172,9 @@ def validate_file(path: Path) -> list[str]:
         if field in fm:
             val = fm[field]
             if not isinstance(val, list):
-                errors.append(f"Field '{field}' must be a YAML list (e.g. ['Paul Seville'] or multi-line - items)")
+                errors.append(
+                    f"Field '{field}' must be a YAML list (e.g. ['Paul Seville'] or multi-line - items)"
+                )
             elif field == "authors" and val and not all(isinstance(x, str) for x in val):
                 errors.append("Field 'authors' must contain only strings")
             elif field == "references" and val and not all(isinstance(x, str) for x in val):
@@ -199,13 +198,9 @@ def validate_file(path: Path) -> list[str]:
                 text = match.group(1) if match else text
             count = _word_count(text)
             if count < min_w:
-                errors.append(
-                    f"TOO SHORT '## {section}': {count} words (min {min_w})"
-                )
+                errors.append(f"TOO SHORT '## {section}': {count} words (min {min_w})")
             elif count > max_w:
-                errors.append(
-                    f"TOO LONG '## {section}': {count} words (max {max_w})"
-                )
+                errors.append(f"TOO LONG '## {section}': {count} words (max {max_w})")
 
     # Total word count
     total = _word_count(body)
@@ -230,6 +225,7 @@ def validate_file(path: Path) -> list[str]:
 
 # ── CLI ─────────────────────────────────────────────────────────────────────────
 
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Validate OrgContext entry files.")
     parser.add_argument("path", nargs="?", help="Path to a single .md file")
@@ -251,6 +247,7 @@ def main() -> None:
         sys.exit(0)
 
     total_errors = 0
+    # First pass: per-file structural validation
     for f in files:
         errors = validate_file(f)
         rel = f.relative_to(repo_root)
@@ -262,6 +259,16 @@ def main() -> None:
         else:
             print(f"✅  {rel}")
 
+    # Second pass: cross-reference integrity (only meaningful in --all mode,
+    # since a single-file invocation has no global ID set to check against).
+    if args.all and files:
+        all_ids, broken_links = _collect_related_link_errors(files, repo_root)
+        if broken_links:
+            print(f"\n❌  broken related links ({len(broken_links)}):")
+            for source, target in broken_links:
+                print(f"   • {source} → {target} (target entry does not exist)")
+            total_errors += len(broken_links)
+
     print(f"\n{'─' * 50}")
     if total_errors == 0:
         print(f"All {len(files)} entries valid.")
@@ -269,6 +276,35 @@ def main() -> None:
     else:
         print(f"{total_errors} error(s) across {len(files)} entries.")
         sys.exit(1)
+
+
+def _collect_related_link_errors(
+    files: list[Path], repo_root: Path
+) -> tuple[set[str], list[tuple[str, str]]]:
+    """Return (set of all known entry IDs, list of (source_id, broken_target) pairs).
+
+    Runs after per-file validation, so we re-parse frontmatter from the files
+    on disk (cheap; no large content reads).
+    """
+    all_ids: set[str] = set()
+    fm_by_file: dict[Path, dict] = {}
+    for f in files:
+        raw = f.read_text(encoding="utf-8")
+        fm, _ = _parse_frontmatter(raw)
+        eid = fm.get("id") or f.stem
+        all_ids.add(eid)
+        fm_by_file[f] = fm
+
+    broken: list[tuple[str, str]] = []
+    for f, fm in fm_by_file.items():
+        related = fm.get("related") or []
+        if not isinstance(related, list):
+            continue  # per-file validator already flagged type errors
+        source_id = fm.get("id") or f.stem
+        for target in related:
+            if target not in all_ids:
+                broken.append((source_id, str(target)))
+    return all_ids, broken
 
 
 if __name__ == "__main__":
