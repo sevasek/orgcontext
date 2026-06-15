@@ -1,4 +1,5 @@
 """OrgContext MCP Server — exposes the corpus as Model Context Protocol tools."""
+
 from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
@@ -45,7 +46,9 @@ def list_entries(category: str | None = None) -> str:
     for e in entries:
         author_str = ", ".join(e.get("authors", [])) if e.get("authors") else "unknown"
         last = e.get("last_updated", "")
-        lines.append(f"- {e['id']}: {e['title']} ({e['category']}) [by {author_str}, updated {last}]")
+        lines.append(
+            f"- {e['id']}: {e['title']} ({e['category']}) [by {author_str}, updated {last}]"
+        )
     if category:
         header = f"OrgContext entries in '{category}' ({len(entries)} total):\n"
     else:
@@ -55,23 +58,20 @@ def list_entries(category: str | None = None) -> str:
 
 @mcp.tool()
 def search_entries(query: str) -> str:
-    """Search OrgContext entries by keyword across entry IDs, titles, and tags.
-    Results now include authors and update date thanks to enhanced metadata."""
-    all_entries = _oc.list_entries()
-    q = query.lower()
-    matches = [
-        e for e in all_entries
-        if q in e["id"].lower()
-        or q in e["title"].lower()
-        or any(q in tag.lower() for tag in (e.get("tags") or []))
-    ]
+    """Search OrgContext entries by keyword across entry IDs, titles, categories, tags, and authors.
+    Results include authors and last_updated via the shared public API."""
+    matches = _oc.search_entries(query)
     if not matches:
-        return f"No entries found matching '{query}'. Try list_entries() to see all available entries."
+        return (
+            f"No entries found matching '{query}'. Try list_entries() to see all available entries."
+        )
     lines = []
     for e in matches:
         author_str = ", ".join(e.get("authors", [])) if e.get("authors") else "unknown"
         last = e.get("last_updated", "")
-        lines.append(f"- {e['id']}: {e['title']} ({e['category']}) [by {author_str}, updated {last}]")
+        lines.append(
+            f"- {e['id']}: {e['title']} ({e['category']}) [by {author_str}, updated {last}]"
+        )
     return f"Found {len(matches)} entries matching '{query}':\n" + "\n".join(lines)
 
 

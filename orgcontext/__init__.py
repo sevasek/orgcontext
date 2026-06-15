@@ -21,6 +21,7 @@ from typing import Optional
 
 try:
     import yaml  # PyYAML, optional but recommended
+
     HAS_YAML = True
 except ImportError:
     HAS_YAML = False
@@ -37,26 +38,32 @@ __all__ = [
 
 # ── Path resolution ────────────────────────────────────────────────────────────
 
+
 def _corpus_root() -> Path:
-    """Return the path to the corpus root."""
-    # For editable installs and source
+    """Return the path to the corpus root (the directory containing core/).
+
+    Resolution order:
+      1. The directory two levels up from this file (the repo root for
+         source checkouts and editable installs).
+      2. Fail loudly if core/ is not found at the expected location.
+
+    A silent fallback to the installed package root was removed: it caused
+    tests run from a different working directory (CI, sub-shells) to
+    succeed against the installed package's bundled corpus instead of
+    failing, masking real path issues.
+    """
     root = Path(__file__).parent.parent
     if (root / "core").exists():
         return root
-    
-    # Fallback: try to find it relative to installed package
-    try:
-        import orgcontext
-        pkg_root = Path(orgcontext.__file__).parent.parent
-        if (pkg_root / "core").exists():
-            return pkg_root
-    except Exception:
-        pass
-    
-    raise RuntimeError("Could not locate OrgContext corpus root. Is 'core/' folder present?")
+    raise RuntimeError(
+        f"Could not locate OrgContext corpus root. Expected 'core/' at "
+        f"{root}, but it was not found. If you are running tests from a "
+        f"different working directory, pass corpus_root= explicitly."
+    )
 
 
 # ── Data model ─────────────────────────────────────────────────────────────────
+
 
 @dataclass
 class OrgContextEntry:
@@ -143,25 +150,26 @@ class OrgContextEntry:
             "raw_markdown": self.raw_markdown,
         }
         if include_sections:
-            data.update({
-                "definition": self.definition,
-                "when_to_apply": self.when_to_apply,
-                "decision_heuristics": self.decision_heuristics,
-                "anti_patterns": self.anti_patterns,
-                "prompt_snippet": self.prompt_snippet,
-                "see_also": self.see_also,
-            })
+            data.update(
+                {
+                    "definition": self.definition,
+                    "when_to_apply": self.when_to_apply,
+                    "decision_heuristics": self.decision_heuristics,
+                    "anti_patterns": self.anti_patterns,
+                    "prompt_snippet": self.prompt_snippet,
+                    "see_also": self.see_also,
+                }
+            )
         return data
 
 
 # ── Core API ───────────────────────────────────────────────────────────────────
 
+
 def _find_entry_path(entry_id: str, corpus_root: Path) -> Optional[Path]:
     """Search all subdirectories of core/ and industry/ for <entry_id>.md."""
     for md_file in corpus_root.rglob("*.md"):
-        if md_file.stem == entry_id and any(
-            part in ("core", "industry") for part in md_file.parts
-        ):
+        if md_file.stem == entry_id and any(part in ("core", "industry") for part in md_file.parts):
             return md_file
     return None
 
@@ -174,7 +182,7 @@ def _parse_frontmatter(raw: str) -> dict:
     fm_text = match.group(1)
     if HAS_YAML:
         return yaml.safe_load(fm_text) or {}
-    
+
     # Minimal fallback parser for key: value lines
     result = {}
     for line in fm_text.splitlines():
@@ -205,13 +213,12 @@ def load(entry_id: str, corpus_root: Optional[Path] = None) -> OrgContextEntry:
     path = _find_entry_path(entry_id, root)
     if path is None:
         raise FileNotFoundError(
-            f"No entry found for '{entry_id}'. "
-            f"Run list_entries() to see available IDs."
+            f"No entry found for '{entry_id}'. Run list_entries() to see available IDs."
         )
     raw = path.read_text(encoding="utf-8")
     fm = _parse_frontmatter(raw)
 
-    return OrgContextEntry(
+    entry = OrgContextEntry(
         id=fm.get("id", entry_id),
         title=fm.get("title", entry_id),
         category=fm.get("category", ""),
@@ -310,16 +317,23 @@ def search_entries(
     Search entries by keyword across id, title, tags, and category.
 
     Args:
-        query: Search string (case-insensitive).
+        query: Search string (case-insensitive). An empty or whitespace-only
+            query returns an empty list — use list_entries() to enumerate
+            all entries. (Earlier implementations returned every entry for
+            an empty query due to Python's ``"" in s == True`` semantics,
+            which surprised callers.)
         corpus_root: Optional override for the corpus root directory.
 
     Returns:
         List of matching entry dicts (same structure as list_entries).
     """
-    q = query.lower()
+    q = (query or "").strip().lower()
+    if not q:
+        return []
     all_entries = list_entries(corpus_root=corpus_root)
     matches = [
-        e for e in all_entries
+        e
+        for e in all_entries
         if (
             q in e["id"].lower()
             or q in e["title"].lower()
