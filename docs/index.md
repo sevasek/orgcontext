@@ -79,12 +79,4 @@
 ---
 ## Planned Entries (contributions welcome)
 
-See [open issues labeled `new-entry`](https://github.com/sevasek/orgcontext/issues?q=label%3Anew-entry) for entries the community has proposed.
-
-High-priority gaps:
-**mission-vision:** `bhag`, `organizational-purpose`
-**leadership-frameworks:** `adaptive-leadership`, `distributed-leadership`
-**roles-responsibilities:** `product-manager`, `cto`, `chief-of-staff`, `engineering-manager`
-**governance:** `steering-committee`, `working-group`
-**culture-values:** `belonging`, `team-norms`
-**strategy-execution:** `portfolio-management`, `change-management`
+See [open issues labeled `new-entry`](https://github.com/sevasek/orgcontext/issues?q=label%3Anew-entry) for entries the community has proposed. The GitHub Issues list is the source of truth for planned work.
