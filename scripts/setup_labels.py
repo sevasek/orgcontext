@@ -60,11 +60,18 @@ def main() -> None:
             skipped += 1
             continue
 
-        rc, _, _ = run([
-            "gh", "label", "create", name,
-            "--color", color,
-            "--description", desc,
-        ])
+        rc, _, _ = run(
+            [
+                "gh",
+                "label",
+                "create",
+                name,
+                "--color",
+                color,
+                "--description",
+                desc,
+            ]
+        )
         if rc == 0:
             print(f"  ✅ {name} — created")
             created += 1
