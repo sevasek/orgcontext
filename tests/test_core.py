@@ -327,6 +327,19 @@ class TestSearchAndMetadata:
         # The warning logic was added in Win 3; this test documents expected behavior
         assert hasattr(entry, "deprecated")
 
+    def test_search_entries_finds_by_author(self):
+        # Regression guard: the docstring was updated to advertise author
+        # search; this test confirms the field is actually queried.
+        results = search_entries("Paul Seville", corpus_root=CORPUS_ROOT.parent)
+        assert any(e["id"] == "okrs" for e in results)
+
+    def test_get_frontmatter_missing_entry_raises_filenotfound(self):
+        # get_frontmatter must raise the same exception type as load() for
+        # the same condition. Earlier versions raised KeyError, which broke
+        # callers that used 'except FileNotFoundError' to catch both.
+        with pytest.raises(FileNotFoundError, match="No entry found"):
+            get_frontmatter("definitely-not-an-entry", corpus_root=CORPUS_ROOT.parent)
+
 
 class TestIndustryEntriesLoadable:
     """Regression guard for the feat/industry-packs commit.

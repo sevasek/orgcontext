@@ -314,7 +314,7 @@ def search_entries(
     corpus_root: Optional[Path] = None,
 ) -> list[dict]:
     """
-    Search entries by keyword across id, title, tags, and category.
+    Search entries by keyword across id, title, category, tags, and authors.
 
     Args:
         query: Search string (case-insensitive). An empty or whitespace-only
@@ -353,6 +353,11 @@ def get_frontmatter(
     Return the raw frontmatter dictionary for a given entry ID.
 
     Useful for accessing all metadata without loading the full entry.
+
+    Raises:
+        FileNotFoundError: If no entry with the given ID exists. (Earlier
+            versions raised KeyError; FileNotFoundError matches load()'s
+            contract for the same condition.)
     """
     root = corpus_root or _corpus_root()
     # Find the file
@@ -362,4 +367,6 @@ def get_frontmatter(
         if md_file.stem == entry_id:
             raw = md_file.read_text(encoding="utf-8")
             return _parse_frontmatter(raw)
-    raise KeyError(f"Entry not found: {entry_id}")
+    raise FileNotFoundError(
+        f"No entry found for '{entry_id}'. Run list_entries() to see available IDs."
+    )
