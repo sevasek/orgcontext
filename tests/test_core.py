@@ -44,6 +44,19 @@ class TestLoad:
         with pytest.raises(FileNotFoundError, match="No entry found"):
             load("nonexistent-entry", corpus_root=CORPUS_ROOT.parent)
 
+    def test_load_strips_whitespace_from_entry_id(self):
+        # Regression guard: a copy-pasted ID with a stray space would
+        # otherwise hit exact-match lookup and raise FileNotFoundError.
+        # The strip is silent (no warning) so callers don't need to know.
+        entry = load("  okrs  ", corpus_root=CORPUS_ROOT.parent)
+        assert entry.id == "okrs"
+
+    def test_load_whitespace_only_still_raises_value_error(self):
+        # After stripping, a whitespace-only ID is empty — same ValueError
+        # contract as passing "" directly.
+        with pytest.raises(ValueError, match="entry_id must be a non-empty string"):
+            load("   ", corpus_root=CORPUS_ROOT.parent)
+
     def test_load_empty_entry_id(self):
         with pytest.raises(ValueError, match="entry_id must be a non-empty string"):
             load("", corpus_root=CORPUS_ROOT.parent)
@@ -317,6 +330,11 @@ class TestSearchAndMetadata:
         assert fm["id"] == "raci"
         assert "authors" in fm
         assert "tags" in fm
+
+    def test_get_frontmatter_strips_whitespace(self):
+        # Matches load()'s whitespace-tolerance contract.
+        fm = get_frontmatter("  raci  ", corpus_root=CORPUS_ROOT.parent)
+        assert fm["id"] == "raci"
 
     def test_deprecation_warning(self, recwarn):
         # Create a temporary deprecated entry for test? For now we test the warning path manually
