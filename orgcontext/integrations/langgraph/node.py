@@ -25,6 +25,7 @@ from orgcontext import inject
 
 class OrgContextState(TypedDict, total=False):
     """Extend this TypedDict in your graph state to include OrgContext fields."""
+
     org_context: str  # Injected prompt block from OrgContext
 
 

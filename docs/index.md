@@ -59,15 +59,24 @@
 | [portfolio-management](core/strategy-execution/portfolio-management.md) | Portfolio Management | strategy, prioritization, resource-allocation, projects, initiatives, governance |
 | [strategy-map](core/strategy-execution/strategy-map.md) | Strategy Map | strategy, visualization, balanced-scorecard, alignment, execution |
 
+## Industry Entries (3)
+
+### enterprise
+| ID | Title | Tags |
+|----|-------|------|
+| [digital-transformation](core/industry/enterprise/digital-transformation.md) | Digital Transformation | enterprise, technology, change, strategy, modernization, culture, leadership |
+
+### nonprofit
+| ID | Title | Tags |
+|----|-------|------|
+| [theory-of-change](core/industry/nonprofit/theory-of-change.md) | Theory of Change | nonprofit, strategy, impact, logic-model, outcomes, evaluation, social-change |
+
+### tech-startup
+| ID | Title | Tags |
+|----|-------|------|
+| [product-market-fit](core/industry/tech-startup/product-market-fit.md) | Product–Market Fit | product, growth, validation, startups, pmf, retention, metrics |
+
 ---
 ## Planned Entries (contributions welcome)
 
-See [open issues labeled `new-entry`](https://github.com/sevasek/orgcontext/issues?q=label%3Anew-entry) for entries the community has proposed.
-
-High-priority gaps:
-**mission-vision:** `bhag`, `organizational-purpose`
-**leadership-frameworks:** `adaptive-leadership`, `distributed-leadership`
-**roles-responsibilities:** `product-manager`, `cto`, `chief-of-staff`, `engineering-manager`
-**governance:** `steering-committee`, `working-group`
-**culture-values:** `belonging`, `team-norms`
-**strategy-execution:** `portfolio-management`, `change-management`
+See [open issues labeled `new-entry`](https://github.com/sevasek/orgcontext/issues?q=label%3Anew-entry) for entries the community has proposed. The GitHub Issues list is the source of truth for planned work.

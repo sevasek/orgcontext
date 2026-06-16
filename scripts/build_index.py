@@ -1,17 +1,20 @@
-# Title: OrgContext Corpus Index Builder
-# Purpose: Automatically scan core/ (and later industry/) directories, parse frontmatter, and generate docs/INDEX.md exactly matching Paul's requested style. Pure stdlib, no external dependencies.
-
 #!/usr/bin/env python3
+# Title: OrgContext Corpus Index Builder
+# Purpose: Automatically scan core/ (and later industry/) directories, parse frontmatter, and generate docs/INDEX.md exactly matching Paul's requested style. Uses the package's own frontmatter parser for consistency with the runtime API.
 """
 Build OrgContext Corpus Index
 Usage:
     python scripts/build_index.py
 """
 
-from pathlib import Path
-import re
 import sys
 from collections import defaultdict
+from pathlib import Path
+
+# Make the package importable when this script is run directly.
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from orgcontext import _parse_frontmatter  # noqa: E402
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 REPO_ROOT = Path(__file__).parent.parent
@@ -20,28 +23,16 @@ INDUSTRY_DIR = CORE_DIR / "industry"
 DOCS_DIR = REPO_ROOT / "docs"
 OUTPUT_FILE = DOCS_DIR / "index.md"
 
+
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def parse_frontmatter(content: str) -> dict:
-    """Extract YAML-style frontmatter using regex (no PyYAML dependency)."""
-    match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
-    if not match:
-        return {}
-    fm_text = match.group(1)
-    fm = {}
-    for line in fm_text.splitlines():
-        line = line.strip()
-        if not line or line.startswith('#') or ':' not in line:
-            continue
-        key, _, value = line.partition(":")
-        key = key.strip()
-        value = value.strip().strip('"').strip("'").strip()
-        # Simple list handling
-        if value.startswith("[") and value.endswith("]"):
-            items = [item.strip().strip('"').strip("'") for item in value[1:-1].split(",") if item.strip()]
-            fm[key] = [i for i in items if i]
-        else:
-            fm[key] = value
-    return fm
+    """Delegate to the package's own frontmatter parser.
+
+    The package parser handles both single-line (`[a, b]`) and multi-line
+    (`- a` / `- b`) YAML list shapes, which the previous standalone parser
+    silently dropped for fields like `references:` and `related:`.
+    """
+    return _parse_frontmatter(content)
 
 
 def build_index():
@@ -60,12 +51,14 @@ def build_index():
             continue
         rel_path = md_file.relative_to(REPO_ROOT)
         category = fm.get("category", "uncategorized")
-        entries_by_category[category].append({
-            "id": fm["id"],
-            "title": fm["title"],
-            "tags": fm.get("tags", []),
-            "path": str(rel_path)
-        })
+        entries_by_category[category].append(
+            {
+                "id": fm["id"],
+                "title": fm["title"],
+                "tags": fm.get("tags", []),
+                "path": str(rel_path),
+            }
+        )
 
     # Scan core/industry/ separately
     if INDUSTRY_DIR.exists():
@@ -76,12 +69,14 @@ def build_index():
                 continue
             rel_path = md_file.relative_to(REPO_ROOT)
             sector = md_file.parent.name
-            industry_by_sector[sector].append({
-                "id": fm["id"],
-                "title": fm["title"],
-                "tags": fm.get("tags", []),
-                "path": str(rel_path)
-            })
+            industry_by_sector[sector].append(
+                {
+                    "id": fm["id"],
+                    "title": fm["title"],
+                    "tags": fm.get("tags", []),
+                    "path": str(rel_path),
+                }
+            )
 
     # Ensure docs/ exists
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
@@ -91,7 +86,7 @@ def build_index():
         "# OrgContext Corpus Index",
         "",
         "> Auto-generated. Do not edit manually. Run `python scripts/build_index.py` to regenerate.",
-        ""
+        "",
     ]
 
     total = sum(len(v) for v in entries_by_category.values())
@@ -105,7 +100,7 @@ def build_index():
         "roles-responsibilities",
         "governance",
         "culture-values",
-        "strategy-execution"
+        "strategy-execution",
     ]
 
     for cat in preferred_order:
@@ -156,19 +151,16 @@ def build_index():
     lines.append("---")
     lines.append("## Planned Entries (contributions welcome)")
     lines.append("")
-    lines.append("See [open issues labeled `new-entry`](https://github.com/sevasek/orgcontext/issues?q=label%3Anew-entry) for entries the community has proposed.")
-    lines.append("")
-    lines.append("High-priority gaps:")
-    lines.append("**mission-vision:** `bhag`, `organizational-purpose`")
-    lines.append("**leadership-frameworks:** `adaptive-leadership`, `distributed-leadership`")
-    lines.append("**roles-responsibilities:** `product-manager`, `cto`, `chief-of-staff`, `engineering-manager`")
-    lines.append("**governance:** `steering-committee`, `working-group`")
-    lines.append("**culture-values:** `belonging`, `team-norms`")
-    lines.append("**strategy-execution:** `portfolio-management`, `change-management`")
+    lines.append(
+        "See [open issues labeled `new-entry`](https://github.com/sevasek/orgcontext/issues?q=label%3Anew-entry) for entries the community has proposed. The GitHub Issues list is the source of truth for planned work."
+    )
 
     OUTPUT_FILE.write_text("\n".join(lines), encoding="utf-8")
+    industry_total = sum(len(v) for v in industry_by_sector.values())
     print(f"✅ Index generated successfully: {OUTPUT_FILE}")
-    print(f"   Found {total} entries")
+    print(
+        f"   Found {total} core entries and {industry_total} industry entries ({total + industry_total} total)"
+    )
 
 
 if __name__ == "__main__":
