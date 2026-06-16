@@ -197,7 +197,9 @@ def load(entry_id: str, corpus_root: Optional[Path] = None) -> OrgContextEntry:
     Load a single OrgContext entry by ID.
 
     Args:
-        entry_id: The slug ID of the entry (e.g. "servant-leadership").
+        entry_id: The slug ID of the entry (e.g. "servant-leadership"). Leading
+            and trailing whitespace is stripped before lookup, so a stray space
+            from a copy-paste does not surface as a confusing FileNotFoundError.
         corpus_root: Optional override for the corpus root directory.
 
     Returns:
@@ -207,6 +209,9 @@ def load(entry_id: str, corpus_root: Optional[Path] = None) -> OrgContextEntry:
         FileNotFoundError: If no entry with the given ID exists.
     """
     if not entry_id or not isinstance(entry_id, str):
+        raise ValueError("entry_id must be a non-empty string")
+    entry_id = entry_id.strip()
+    if not entry_id:
         raise ValueError("entry_id must be a non-empty string")
 
     root = corpus_root or _corpus_root()
@@ -353,12 +358,19 @@ def get_frontmatter(
     Return the raw frontmatter dictionary for a given entry ID.
 
     Useful for accessing all metadata without loading the full entry.
+    Whitespace around the ID is stripped (matching load()'s behavior) so
+    a copy-paste typo does not surface as a confusing FileNotFoundError.
 
     Raises:
         FileNotFoundError: If no entry with the given ID exists. (Earlier
             versions raised KeyError; FileNotFoundError matches load()'s
             contract for the same condition.)
     """
+    if not isinstance(entry_id, str):
+        raise ValueError("entry_id must be a string")
+    entry_id = entry_id.strip()
+    if not entry_id:
+        raise ValueError("entry_id must be a non-empty string")
     root = corpus_root or _corpus_root()
     # Find the file
     for md_file in root.rglob("*.md"):
