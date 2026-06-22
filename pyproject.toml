@@ -44,6 +44,7 @@ dev = [
     "ruff>=0.4",
 ]
 mcp = ["mcp>=1.0; python_version >= '3.10'", "PyYAML>=6.0"]
+openai-agents = ["openai-agents>=0.0.3; python_version >= '3.10'"]
 
 [project.scripts]
 orgcontext-mcp = "orgcontext.mcp_server:main"
