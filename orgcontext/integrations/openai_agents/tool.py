@@ -20,13 +20,12 @@ from typing import Optional
 
 try:
     from agents import FunctionTool
-    import inspect
 
     HAS_OPENAI_AGENTS = True
 except ImportError:
     HAS_OPENAI_AGENTS = False
 
-from orgcontext import inject, load, search_entries
+from orgcontext import inject, load
 
 
 def org_context_tool(
