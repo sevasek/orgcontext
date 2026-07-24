@@ -200,14 +200,14 @@ We welcome contributions from leadership coaches, PMs, engineers, and agent buil
 | Phase | Focus | Status |
 |-------|-------|--------|
 | **Now** | Entry format, 31 quality core entries, Python package, test suite, multi-agent workflow | ✅ Complete |
-| **Short-term** | Industry packs (3 initial entries ✅), PyPI release, additional integrations | In progress |
+| **Short-term** | Industry packs (3 initial entries ✅), PyPI release, additional integrations (OpenAI Agents SDK ✅) | In progress |
 | **Medium-term** | Versioning, RAG-friendly embeddings, MCP server support | Planned |
 | **Longer-term** | Enterprise sync tools, hosted corpus API | Planned |
 
 **Next contributions welcome:**  
 Industry packs: more entries under `tech-startup/`, `enterprise/`, `nonprofit/`  
 New sectors: `healthcare/`, `education/`, `government/`  
-Integrations: LlamaIndex, AutoGen, OpenAI Agents SDK
+Integrations: LlamaIndex, AutoGen, ~~OpenAI Agents SDK~~ ✅
 
 ---
 
