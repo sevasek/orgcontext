@@ -169,8 +169,8 @@ See [Corpus Index](docs/index.md) for all 34 current entries.
 
 - **34 validated entries** — 31 core entries across 6 categories + 3 industry entries (tech-startup, enterprise, nonprofit), all passing automated validation + test suite
 - Python package with `load()`, `inject()`, `list_entries()`, and full metadata (`authors`, `references`, `deprecated`, `to_dict()`)
-- LangGraph and CrewAI integrations
-- Multi-agent workflow with AGENT.md, issue templates, and CI validation
+- LangGraph, CrewAI, and OpenAI Agents SDK integrations, plus an MCP server (`orgcontext-mcp`) for Claude Desktop/Code
+- Multi-agent workflow with AGENT.md, issue templates, and dependency review on PRs
 - PyPI release in progress
 
 ---
@@ -199,15 +199,15 @@ We welcome contributions from leadership coaches, PMs, engineers, and agent buil
 
 | Phase | Focus | Status |
 |-------|-------|--------|
-| **Now** | Entry format, 31 quality core entries, Python package, test suite, multi-agent workflow | ✅ Complete |
+| **Now** | Entry format, 31 quality core entries, Python package, test suite, multi-agent workflow, MCP server (`orgcontext-mcp`) | ✅ Complete |
 | **Short-term** | Industry packs (3 initial entries ✅), PyPI release, additional integrations (OpenAI Agents SDK ✅) | In progress |
-| **Medium-term** | Versioning, RAG-friendly embeddings, MCP server support | Planned |
-| **Longer-term** | Enterprise sync tools, hosted corpus API | Planned |
+| **Medium-term** | Corpus versioning & change feed, RAG-friendly semantic search (embeddings extra) | Planned |
+| **Longer-term** | Enterprise sync tools, hosted corpus API, AGENTS.md exporter | Planned |
 
 **Next contributions welcome:**  
 Industry packs: more entries under `tech-startup/`, `enterprise/`, `nonprofit/`  
 New sectors: `healthcare/`, `education/`, `government/`  
-Integrations: LlamaIndex, AutoGen, ~~OpenAI Agents SDK~~ ✅
+Integrations: LlamaIndex, AutoGen, ~~OpenAI Agents SDK~~ ✅, ~~MCP server~~ ✅
 
 ---
 
